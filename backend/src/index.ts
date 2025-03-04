@@ -10,4 +10,4 @@ app.get("/", (req: Request, res: Response) => {
     res.send("Hello");
 })
 
-app.listen(PORT, () => console.log(`Server started on PORT: ${PORT}`));
+app.listen(PORT, () => console.log(`Server asdfa started on PORT: ${PORT}`));
