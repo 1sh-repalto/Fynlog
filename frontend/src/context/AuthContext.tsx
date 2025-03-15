@@ -1,15 +1,24 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { useNavigate } from "react-router-dom";
-import { login, logout } from "../api/auth";
+import { login, logout, signup } from "../api/auth";
+import { toast } from "react-toastify";
 
 interface User {
   id: number;
   email: string;
+  name: string;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  signUp: (name: string, email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -36,7 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const userData = await response.json();
         setUser(userData);
       } catch (error) {
-        console.log("Authentication check failed:", error);
+        toast.error("Session expired. Please log in again.");
         setUser(null);
       } finally {
         setLoading(false);
@@ -46,19 +55,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkAuth();
   }, []);
 
+  const signUp = async (name: string, email: string, password: string) => {
+    try {
+      const data = await signup(name, email, password);
+
+      if (data) {
+        setUser(data);
+        toast.success("Signup successful.");
+        navigate("/home");
+      } else {
+        throw new Error("User details not found in response");
+      }
+    } catch (error: any) {
+      const errorMessage = error.message || "Signup failed";
+      toast.error(errorMessage);
+    }
+  };
+
   const signIn = async (email: string, password: string) => {
     try {
       const data = await login(email, password);
 
       if (data) {
         setUser(data);
+        toast.success("Login successful.");
         navigate("/home");
       } else {
         throw new Error("User details not found in response");
       }
-    } catch (error) {
-      console.error("Login failed:", error);
-      throw error;
+    } catch (error: any) {
+      const errorMessage = error.message || "Login failed";
+      toast.error(errorMessage);
     }
   };
 
@@ -66,15 +93,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await logout();
       setUser(null);
-      navigate("/auth"); // ✅ Redirect after logout
-    } catch (error) {
-      console.error("Logout failed:", error);
-      throw error;
+      navigate("/auth");
+    } catch (error: any) {
+      const errorMessage = error.message || "Logout failed.";
+      toast.error(errorMessage);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
       {loading ? <p>Loading...</p> : children}
     </AuthContext.Provider>
   );

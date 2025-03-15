@@ -1,8 +1,9 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import User from "../models/user";
 import bcrypt from "bcryptjs";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
+import { AppError } from "../middlewares/errorHandler";
 
 dotenv.config();
 
@@ -15,15 +16,14 @@ interface AuthRequest extends Request {
 // register user
 export const authRegister = async (
   req: Request,
-  res: Response
-): Promise<any> => {
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { name, email, password } = req.body;
   try {
     const user = await User.findOne({ where: { email } });
     if (user) {
-      return res
-        .status(400)
-        .json({ message: "User with this email already exists." });
+      throw new AppError("A user already exists with this email.", 409);
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -33,74 +33,92 @@ export const authRegister = async (
       password: hashedPassword,
     });
 
-    res.status(201).json({ message: "User created successfully.", newUser });
+    const accessToken = jwt.sign(
+      { id: newUser.id, email: newUser.email },
+      JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      maxAge: 15 * 60 * 1000, // 15 min
+    });
+
+    res.json({ id: newUser.id, email: newUser.email, name: newUser.name });
   } catch (error) {
-    return res.status(400).json({ message: "Error registering user.", error });
+    next(error);
   }
 };
 
 // login user
-export const authLogin = async (req: Request, res: Response): Promise<any> => {
+export const authLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { email, password } = req.body;
-
   try {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: "No user exists with this email." });
+      throw new AppError("No user exists with this email.", 404);
     }
 
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
-      return res.status(401).json({ message: "Invalid password." });
+      throw new AppError("Invalid Password", 401);
     }
 
-    const accessToken = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
-      expiresIn: "15m",
-    });
+    const accessToken = jwt.sign(
+      { id: user.id, email: user.email },
+      JWT_SECRET,
+      {
+        expiresIn: "15m",
+      }
+    );
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       sameSite: "strict",
-      maxAge: 15 * 60 * 1000,
+      maxAge: 15 * 60 * 1000, // 1 min
     });
 
-    return res.json({ id: user.id, email: user.email });
-
+    res.json({ id: user.id, email: user.email, name: user.name });
+    
   } catch (error) {
-    return res.status(500).json({ message: "Error logging in", error });
+    next(error);
   }
 };
 
 export const validateCookie = async (
   req: AuthRequest,
-  res: Response
-): Promise<any> => {
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const token = req.cookies?.accessToken;
-    
+
     if (!token) {
-      return res.status(401).json({ error: "No token provided" });
+      throw new AppError("No token provided", 401);
     }
-    
+
     jwt.verify(token, JWT_SECRET as string, (err, decoded) => {
-      if(err) return res.status(403).json({ message: "Invalid token" });
+      if (err) {
+        throw new AppError("Invalid token", 403);
+      }
 
       const user = decoded as JwtPayload;
 
       res.json({ id: user.id, email: user.email });
     });
-
   } catch (error) {
-    console.log("Token validation failed.", error);
-    res.status(401).json({ error: "Invalid or expired token" });
+    next(error);
   }
 };
 
-export const logout = (req: Request, res: Response) => {
+export const logout = (req: Request, res: Response, next: NextFunction) => {
   try {
     res.clearCookie("authToken", {
       httpOnly: true,
@@ -109,7 +127,6 @@ export const logout = (req: Request, res: Response) => {
 
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
-    console.error("Logout failed:", error);
-    res.status(500).json({ message: "logout failed", error });
+    next(error);
   }
 };

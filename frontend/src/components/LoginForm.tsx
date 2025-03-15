@@ -1,32 +1,27 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 interface LoginFormProps {
   login: boolean;
   setLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ login, setLogin }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ setLogin }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
   const { signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await signIn(email, password);
-      alert("Login successful");
-    } catch (error) {
-      setError("Login failed. Please try again.");
-    }
+    await signIn(email, password);
+    setEmail("");
+    setPassword("");
   };
 
   return (
     <div className="w-4/6 min-w-80 max-w-120  min-h-130 mx-auto mt-20 border border-gray-700 rounded-xl shadow-xl">
       <h2 className="text-4xl text-center p-5 h-1/6">Login</h2>
-
-      {error && <p className="text-red-500 text-center">{error}</p>}
 
       <form
         onSubmit={handleSubmit}

@@ -1,32 +1,36 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import User from "../models/user";
+import { AppError } from "../middlewares/errorHandler";
 
 export const getAllUsers = async (
   req: Request,
-  res: Response
-): Promise<any> => {
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const users = await User.findAll();
-    return res.status(200).json({ message: "Showing all users: ", users });
+    res.status(200).json({ message: "Showing all users: ", users });
   } catch (error) {
-    res.status(500).json({ message: "Cannot get all users." });
+    next(error);
   }
 };
 
-export const deleteUser = async (req: Request, res: Response): Promise<any> => {
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { id } = req.params;
 
   try {
     const user = await User.findByPk(id);
     if (!user) {
-      return res.status(400).json({ message: "User does not exist." });
+      throw new AppError("No user exists with this id.", 404);
     }
-
     user.destroy();
-    return res.status(200).json({ message: "User deleted successfully." });
-
+    res.status(200).json({ message: "User deleted successfully." });
   } catch (error) {
-    res.status(500).json({ message: "Error deleting user." });
+    next(error);
   }
 
   res.status(200).json({ message: "User deleted successfully.", id });

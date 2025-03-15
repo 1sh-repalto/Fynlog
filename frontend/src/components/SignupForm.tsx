@@ -2,37 +2,28 @@ import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 interface SignupFormProps {
-    login: boolean;
-    setLogin: React.Dispatch<React.SetStateAction<boolean>>;
+  login: boolean;
+  setLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SignupForm: React.FC<SignupFormProps> = ({ login, setLogin }) => {
+const SignupForm: React.FC<SignupFormProps> = ({ setLogin }) => {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
   const { signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-        await signUp(name, email, password);
-        setName("");
-        setEmail("");
-        setPassword("");
-        alert("Signup successfull");
-        
-    } catch (error) {
-        setError("Signup failed. Please try again.")
-    }
+    const trimmedName = name.trim();
+    await signUp(trimmedName, email, password);
+    setName("");
+    setEmail("");
+    setPassword("");
   };
 
   return (
     <div className="w-4/6 min-w-80 max-w-120 min-h-150 mx-auto mt-20 border border-gray-700 rounded-xl shadow-xl">
       <h2 className="text-4xl text-center p-5 h-1/6">Sign Up</h2>
-
-      {error && <p className="text-red-500 text-center">{error}</p>}
-
       <form
         onSubmit={handleSubmit}
         className="py-8 px-16 flex-col h-5/6 space-y-2"
@@ -78,7 +69,15 @@ const SignupForm: React.FC<SignupFormProps> = ({ login, setLogin }) => {
           Sign Up
         </button>
       </form>
-      <p className="text-center select-none">Already have an account ? <a onClick={() => setLogin(true)} className="text-blue-500 cursor-pointer hover:underline">Log In</a></p>
+      <p className="text-center select-none">
+        Already have an account ?{" "}
+        <a
+          onClick={() => setLogin(true)}
+          className="text-blue-500 cursor-pointer hover:underline"
+        >
+          Log In
+        </a>
+      </p>
     </div>
   );
 };

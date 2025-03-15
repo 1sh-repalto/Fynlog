@@ -1,35 +1,15 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute";
+import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import HomePage from "./pages/HomePage";
-import LoginForm from "./components/LoginForm";
-import SignupForm from "./components/SignupForm";
-import LandingPage from "./pages/LandingPage";
+import AppRoutes from "./routes/AppRoutes";
+import { ToastContainer } from "react-toastify";
 
 const App: React.FC = () => {
-  const [login, setLogin] = React.useState<boolean>(false);
-
   return (
     <Router>
       <AuthProvider>
-        <Routes>
-          <Route element={<ProtectedRoute />}>
-            <Route path="/home" element={<HomePage />} />
-          </Route>
-
-          <Route path="/" element={<LandingPage />} />
-          <Route
-            path="/auth"
-            element={
-              login ? (
-                <LoginForm login={login} setLogin={setLogin} />
-              ) : (
-                <SignupForm login={login} setLogin={setLogin} />
-              )
-            }
-          />
-        </Routes>
+        <AppRoutes />
+        <ToastContainer position="top-right" autoClose={3000} />
       </AuthProvider>
     </Router>
   );
