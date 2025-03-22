@@ -12,6 +12,7 @@ export const signup = async (
       "Content-type": "application/json",
     },
     body: JSON.stringify({ name, email, password }),
+    credentials: "include"
   });
 
   if (!response.ok) {
