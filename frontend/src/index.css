@@ -2,11 +2,11 @@
 @import "tailwindcss"; 
 
 @theme {
-    --color-primary: #2C3E50;
+    --color-primary: #161F27;
     --color-secondary: #27AE60;
     --color-neutral: #ECF0F1;
     --color-dark: #141414;
-    --color-accent: #2980B9;
+    --color-accent: #5890CB;
     --color-warning: #E67E22;
     --font-montserrat: "Montserrat";
 }

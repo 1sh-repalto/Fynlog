@@ -19,52 +19,48 @@ const LoginForm: React.FC<LoginFormProps> = ({ setLogin }) => {
   };
 
   return (
-    <div className="w-4/6 min-w-80 max-w-120  min-h-130 mx-auto mt-20 border border-gray-700 rounded-xl shadow-xl">
-      <h2 className="text-4xl text-center p-5 h-1/6">Login</h2>
+    <div className="absolute inset-0 -z-10 h-full w-full bg-dark bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:4rem_6rem]">
+      <div className="w-4/6 min-w-80 max-w-120 min-h-150 mx-auto mt-20 text-neutral bg-transparent">
+        <h2 className="text-4xl md:text-6xl text-center font-bold p-5 h-1/6">Login</h2>
 
-      <form
-        onSubmit={handleSubmit}
-        className="py-8 px-16 flex-col h-5/6 space-y-2"
-      >
-        <label htmlFor="email" className="block text-lg pl-2">
-          Email
-        </label>
-        <input
-          required
-          id="email"
-          type="email"
-          placeholder="Your Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="block border border-gray-500 rounded-md mb-6 w-full h-10 pl-2"
-        />
-        <label htmlFor="password" className="block text-lg pl-2">
-          Password
-        </label>
-        <input
-          required
-          id="password"
-          type="password"
-          placeholder="Your Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="block border border-gray-500 rounded-md mb-12 w-full h-10 pl-2"
-        />
-
-        <button type="submit" className="border rounded-md h-10 w-full">
-          Login
-        </button>
-      </form>
-
-      <p className="text-center select-none">
-        Don't have an account ?{" "}
-        <a
-          onClick={() => setLogin(false)}
-          className="text-blue-500 cursor-pointer hover:underline"
+        <form
+          onSubmit={handleSubmit}
+          className="py-8 px-16 flex-col h-5/6 space-y-2"
         >
-          Sign up
-        </a>
-      </p>
+          <input
+            required
+            id="email"
+            type="email"
+            placeholder="Your Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="block bg-neutral-800 rounded-md mb-6 w-full h-10 p-6 outline-none border border-transparent focus:border-neutral"
+          />
+          <input
+            required
+            id="password"
+            type="password"
+            placeholder="Your Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="block bg-neutral-800 rounded-md mb-6 w-full h-10 p-6 outline-none border border-transparent focus:border-neutral"
+          />
+
+          <button type="submit" className="border border-secondary text-secondary text-lg font-medium rounded-md h-12 w-full px-6 mt-6 hover:bg-secondary hover:text-neutral hover:drop-shadow-[0px_0px_8px_rgba(39,174,96,0.8)] active:drop-shadow-none active:bg-[#208049] transition duration-200">
+            Login
+          </button>
+        </form>
+
+        <p className="text-center select-none">
+          Don't have an account ?{" "}
+          <a
+            onClick={() => setLogin(false)}
+            className="text-accent cursor-pointer hover:underline hover:drop-shadow-[0px_0px_10px_rgba(88,144,203,0.8)] active:drop-shadow-none"
+          >
+            Sign up
+          </a>
+        </p>
+      </div>
     </div>
   );
 };
