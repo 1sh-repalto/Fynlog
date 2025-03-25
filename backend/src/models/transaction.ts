@@ -6,7 +6,7 @@ import Category from "./category";
 interface TransactionAttributes {
   id: number;
   userId: number;
-  categoryId: string;
+  categoryId: number;
   amount: number;
   type: "income" | "expense";
   date: Date;
@@ -22,7 +22,7 @@ class Transaction
 {
   public id!: number;
   public userId!: number;
-  public categoryId!: string;
+  public categoryId!: number;
   public amount!: number;
   public type!: "income" | "expense";
   public date!: Date;
