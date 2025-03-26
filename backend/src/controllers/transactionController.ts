@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../middlewares/errorHandler";
 import Transaction from "../models/transaction";
+import Category from "../models/category";
 
 interface AuthenticatedRequest extends Request {
   user?: { id: number; email: string; iat: number; exp: number };
@@ -26,14 +27,40 @@ export const getTransactions = async (
   }
 };
 
-export const createTransaction = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const createTransaction = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    if(!req.user) {
-        throw new AppError("Unauthorized", 401);
+    if (!req.user) {
+      throw new AppError("Unauthorized", 401);
     }
 
     const userId = req.user.id;
-    const { categoryId, amount, type, description } = req.body;
+    let { categoryId, amount, type, description } = req.body;
+
+    if (categoryId) {
+      const category = await Category.findOne({
+        where: { id: categoryId, userId },
+      });
+      if (!category) {
+        throw new AppError(
+          "Invalid category: category does not belong to user.",
+          401
+        );
+      }
+    } else {
+      const defaultCategory = await Category.findOne({
+        where: { userId, isDefault: true },
+      });
+
+      if (!defaultCategory) {
+        throw new AppError("Default category does not exist.", 404);
+      }
+
+      categoryId = defaultCategory.id;
+    }
 
     const transaction = await Transaction.create({
       userId,
@@ -44,8 +71,9 @@ export const createTransaction = async (req: AuthenticatedRequest, res: Response
       description,
     });
 
-    res.status(201).json({ message: "Transaction created successfully", transaction });
-
+    res
+      .status(201)
+      .json({ message: "Transaction created successfully", transaction });
   } catch (error) {
     next(error);
   }

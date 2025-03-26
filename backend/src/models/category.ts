@@ -6,6 +6,7 @@ interface CategoryAttributes {
   id: number;
   userId: number;
   name: string;
+  isDefault: boolean;
 }
 
 interface CategoryCreationAttributes
@@ -18,6 +19,7 @@ class Category
   public id!: number;
   public userId!: number;
   public name!: string;
+  public isDefault!: boolean;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -36,6 +38,7 @@ Category.init(
       onDelete: "CASCADE",
     },
     name: { type: DataTypes.STRING, allowNull: false },
+    isDefault: { type: DataTypes.BOOLEAN, defaultValue: false },
   },
   {
     sequelize,

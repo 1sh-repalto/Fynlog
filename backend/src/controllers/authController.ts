@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import { AppError } from "../middlewares/errorHandler";
+import { ensureDefaultCategory } from "../helper/categoryService";
 
 dotenv.config();
 
@@ -32,6 +33,8 @@ export const authRegister = async (
       email,
       password: hashedPassword,
     });
+
+    await ensureDefaultCategory(newUser.id);
 
     const accessToken = jwt.sign(
       { id: newUser.id, email: newUser.email },
