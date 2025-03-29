@@ -26,7 +26,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(
+    () => JSON.parse(localStorage.getItem("user") || "null")
+  );
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
@@ -44,9 +46,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         const userData = await response.json();
         setUser(userData);
+        localStorage.setItem("user", JSON.stringify(userData));
       } catch (error) {
         toast.error("Session expired. Please log in again.");
         setUser(null);
+        localStorage.removeItem("user");
       } finally {
         setLoading(false);
       }
@@ -61,6 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (data) {
         setUser(data);
+        localStorage.setItem("user", JSON.stringify(data));
         toast.success("Signup successful.");
         navigate("/home");
       } else {
@@ -78,6 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (data) {
         setUser(data);
+        localStorage.setItem("user", JSON.stringify(data));
         toast.success("Login successful.");
         navigate("/home");
       } else {
@@ -93,6 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await logout();
       setUser(null);
+      localStorage.removeItem("user");
       navigate("/auth");
     } catch (error: any) {
       const errorMessage = error.message || "Logout failed.";

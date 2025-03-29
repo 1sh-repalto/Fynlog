@@ -3,13 +3,16 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import AppRoutes from "./routes/AppRoutes";
 import { ToastContainer } from "react-toastify";
+import { TransactionProvider } from "./context/TransactionContext";
 
 const App: React.FC = () => {
   return (
     <Router>
       <AuthProvider>
-        <AppRoutes />
-        <ToastContainer position="top-right" autoClose={3000} />
+        <TransactionProvider>
+          <AppRoutes />
+          <ToastContainer position="top-right" autoClose={3000} />
+        </TransactionProvider>
       </AuthProvider>
     </Router>
   );

@@ -37,7 +37,7 @@ export const authRegister = async (
     await ensureDefaultCategory(newUser.id);
 
     const accessToken = jwt.sign(
-      { id: newUser.id, email: newUser.email },
+      { id: newUser.id, email: newUser.email, name: newUser.name },
       JWT_SECRET,
       { expiresIn: "15m" }
     );
@@ -75,7 +75,7 @@ export const authLogin = async (
     }
 
     const accessToken = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, email: user.email, name: user.name },
       JWT_SECRET,
       {
         expiresIn: "15m",
@@ -114,7 +114,7 @@ export const validateCookie = async (
 
       const user = decoded as JwtPayload;
 
-      res.json({ id: user.id, email: user.email });
+      res.json({ id: user.id, email: user.email, name: user.name });
     });
   } catch (error) {
     next(error);
