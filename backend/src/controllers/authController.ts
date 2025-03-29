@@ -8,22 +8,31 @@ import { ensureDefaultCategory } from "../helper/categoryService";
 
 dotenv.config();
 
+const ACCESS_TOKEN_EXPIRY = "15m";
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 interface AuthRequest extends Request {
   cookies: { accessToken?: string }; // Define cookies structure
 }
 
+const generateToken = (user: { id: number; email: string; name: string }) => {
+  return jwt.sign(
+    { id: user.id, email: user.email, name: user.name },
+    JWT_SECRET,
+    { expiresIn: ACCESS_TOKEN_EXPIRY }
+  );
+};
+
 // register user
-export const authRegister = async (
+export const authSignup = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   const { name, email, password } = req.body;
   try {
-    const user = await User.findOne({ where: { email } });
-    if (user) {
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
       throw new AppError("A user already exists with this email.", 409);
     }
 
@@ -35,12 +44,7 @@ export const authRegister = async (
     });
 
     await ensureDefaultCategory(newUser.id);
-
-    const accessToken = jwt.sign(
-      { id: newUser.id, email: newUser.email, name: newUser.name },
-      JWT_SECRET,
-      { expiresIn: "15m" }
-    );
+    const accessToken = generateToken(newUser);
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
@@ -48,7 +52,9 @@ export const authRegister = async (
       maxAge: 15 * 60 * 1000, // 15 min
     });
 
-    res.json({ id: newUser.id, email: newUser.email, name: newUser.name });
+    res
+      .status(201)
+      .json({ id: newUser.id, email: newUser.email, name: newUser.name });
   } catch (error) {
     next(error);
   }
@@ -68,33 +74,27 @@ export const authLogin = async (
       throw new AppError("No user exists with this email.", 404);
     }
 
-    const isValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isValid) {
+    if (!isPasswordValid) {
       throw new AppError("Invalid Password", 401);
     }
 
-    const accessToken = jwt.sign(
-      { id: user.id, email: user.email, name: user.name },
-      JWT_SECRET,
-      {
-        expiresIn: "15m",
-      }
-    );
+    const accessToken = generateToken(user);
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       sameSite: "strict",
-      maxAge: 15 * 60 * 1000, // 1 min
+      maxAge: 15 * 60 * 1000, // 15 min
     });
 
-    res.json({ id: user.id, email: user.email, name: user.name });
-    
+    res.status(200).json({ id: user.id, email: user.email, name: user.name });
   } catch (error) {
     next(error);
   }
 };
 
+// validate user session
 export const validateCookie = async (
   req: AuthRequest,
   res: Response,
@@ -113,7 +113,6 @@ export const validateCookie = async (
       }
 
       const user = decoded as JwtPayload;
-
       res.json({ id: user.id, email: user.email, name: user.name });
     });
   } catch (error) {
@@ -121,9 +120,10 @@ export const validateCookie = async (
   }
 };
 
-export const logout = (req: Request, res: Response, next: NextFunction) => {
+// logout user
+export const authLogout = (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.clearCookie("authToken", {
+    res.clearCookie("accessToken", {
       httpOnly: true,
       sameSite: "strict",
     });

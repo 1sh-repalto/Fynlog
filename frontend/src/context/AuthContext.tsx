@@ -18,6 +18,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  isAuthenticated: boolean;
   signUp: (name: string, email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -26,13 +27,18 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(
-    () => JSON.parse(localStorage.getItem("user") || "null")
-  );
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
+  const isAuthenticated = !!user;
+
   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+
     const checkAuth = async () => {
       try {
         const response = await fetch("http://localhost:3000/auth/validate", {
@@ -45,10 +51,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
 
         const userData = await response.json();
-        setUser(userData);
-        localStorage.setItem("user", JSON.stringify(userData));
+        if (JSON.stringify(user) !== JSON.stringify(userData)) {
+          setUser(userData);
+          localStorage.setItem("user", JSON.stringify(userData));
+        }
       } catch (error) {
-        toast.error("Session expired. Please log in again.");
+        if (storedUser) {
+          toast.error("Session expired. Please log in again.");
+        }
         setUser(null);
         localStorage.removeItem("user");
       } finally {
@@ -64,16 +74,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const data = await signup(name, email, password);
 
       if (data) {
-        setUser(data);
-        localStorage.setItem("user", JSON.stringify(data));
+        if (JSON.stringify(user) !== JSON.stringify(data)) {
+          setUser(data);
+          localStorage.setItem("user", JSON.stringify(data));
+        }
         toast.success("Signup successful.");
         navigate("/home");
       } else {
         throw new Error("User details not found in response");
       }
     } catch (error: any) {
-      const errorMessage = error.message || "Signup failed";
-      toast.error(errorMessage);
+      toast.error(
+        `Signup failed: ${error.message || "Unknown error occurred"}`
+      );
     }
   };
 
@@ -82,8 +95,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const data = await login(email, password);
 
       if (data) {
-        setUser(data);
-        localStorage.setItem("user", JSON.stringify(data));
+        if (JSON.stringify(user) !== JSON.stringify(data)) {
+          setUser(data);
+          localStorage.setItem("user", JSON.stringify(data));
+        }
         toast.success("Login successful.");
         navigate("/home");
       } else {
@@ -108,8 +123,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
-      {loading ? <p>Loading...</p> : children}
+    <AuthContext.Provider
+      value={{ user, loading, isAuthenticated, signIn, signUp, signOut }}
+    >
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <p>Loading...</p>
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };
