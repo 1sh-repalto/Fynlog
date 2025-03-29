@@ -11,7 +11,7 @@ const App: React.FC = () => {
       <AuthProvider>
         <TransactionProvider>
           <AppRoutes />
-          <ToastContainer position="top-right" autoClose={3000} />
+          <ToastContainer position="top-right" autoClose={3000} theme="coloured"/>
         </TransactionProvider>
       </AuthProvider>
     </Router>
