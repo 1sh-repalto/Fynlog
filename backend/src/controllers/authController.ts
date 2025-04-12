@@ -99,12 +99,12 @@ export const validateCookie = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction
-): Promise<void> => {
+): Promise<any> => {
   try {
     const token = req.cookies?.accessToken;
 
     if (!token) {
-      throw new AppError("No token provided", 401);
+      return res.status(200).json(null);
     }
 
     jwt.verify(token, JWT_SECRET as string, (err, decoded) => {

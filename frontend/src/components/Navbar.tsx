@@ -1,8 +1,8 @@
 import React from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuthStore } from '../store/useAuth';
 
 const Navbar: React.FC = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut } = useAuthStore();
 
   return (
     <nav>

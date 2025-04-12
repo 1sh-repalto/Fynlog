@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import React, { useEffect, useState } from "react";
+import { useAuthStore } from "../store/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface SignupFormProps {
   login: boolean;
@@ -7,10 +8,17 @@ interface SignupFormProps {
 }
 
 const SignupForm: React.FC<SignupFormProps> = ({ setLogin }) => {
+  const navigate = useNavigate();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { signUp } = useAuth();
+  const { signUp, isAuthenticated } = useAuthStore();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/home", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

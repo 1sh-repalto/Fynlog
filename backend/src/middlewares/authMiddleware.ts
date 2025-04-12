@@ -18,7 +18,7 @@ interface AuthenticatedRequest extends Request {
 
 const authMiddleware = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const token = req.cookies.accessToken;
-
+    
     if(!token) {
         return next(new AppError("No token provided", 404));
     }

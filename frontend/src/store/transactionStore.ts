@@ -1,13 +1,7 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { create } from "zustand";
 import { toast } from "react-toastify";
 
-interface Transaction {
+export interface Transaction {
   id: number;
   userId: number;
   amount: number;
@@ -17,14 +11,14 @@ interface Transaction {
   description?: string;
 }
 
-interface Category {
+export interface Category {
   id: number;
   userId: number;
   name: string;
   isDefault: boolean;
 }
 
-interface TransactionContextType {
+interface TransactionStore {
   transactions: Transaction[];
   categories: Category[];
   loading: boolean;
@@ -33,16 +27,13 @@ interface TransactionContextType {
   addTransaction: (transaction: Omit<Transaction, "id">) => Promise<void>;
 }
 
-const TransactionContext = createContext<TransactionContextType | undefined>(
-  undefined
-);
+export const useTransactionStore = create<TransactionStore>((set) => ({
+  transactions: [],
+  categories: [],
+  loading: true,
 
-export const TransactionProvider = ({ children }: { children: ReactNode }) => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const fetchTransactions = async () => {
+  fetchTransactions: async () => {
+    set({ loading: true });
     try {
       const response = await fetch("http://localhost:3000/transaction", {
         method: "GET",
@@ -50,35 +41,33 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (!response.ok) throw new Error("Failed to fetch transactions.");
-
       const data = await response.json();
-      setTransactions(data);
+
+      set({ transactions: data });
     } catch (error: any) {
       toast.error(error.message || "Error fetching transactions");
     } finally {
-      setLoading(false);
+      set({ loading: false });
     }
-  };
+  },
 
-  const fetchCategories = async () => {
+  fetchCategories: async () => {
     try {
       const response = await fetch("http://localhost:3000/category", {
         method: "GET",
         credentials: "include",
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to get categories.");
-      }
-
+      if (!response.ok) throw new Error("Failed to get categories.");
       const data = await response.json();
-      setCategories(data);
+
+      set({ categories: data });
     } catch (error: any) {
       toast.error(error.message || "Error fetching categories.");
     }
-  };
+  },
 
-  const addTransaction = async (transaction: Omit<Transaction, "id">) => {
+  addTransaction: async (transaction) => {
     try {
       const response = await fetch("http://localhost:3000/transaction", {
         method: "POST",
@@ -89,45 +78,15 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
         body: JSON.stringify(transaction),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to add transaction.");
-      }
-
+      if (!response.ok) throw new Error("Failed to add transaction.");
       const newTransaction = await response.json();
-      setTransactions((prev) => [...prev, newTransaction]);
+
+      set((state) => ({
+        transactions: [...state.transactions, newTransaction],
+      }));
       toast.success("Transaction added successfully");
     } catch (error: any) {
       toast.error(error.message || "Error adding transaction");
     }
-  };
-
-  useEffect(() => {
-    fetchTransactions();
-    fetchCategories();
-  }, []);
-
-  return (
-    <TransactionContext.Provider
-      value={{
-        transactions,
-        categories,
-        loading,
-        fetchTransactions,
-        fetchCategories,
-        addTransaction,
-      }}
-    >
-      {children}
-    </TransactionContext.Provider>
-  );
-};
-
-export const useTransaction = () => {
-  const context = useContext(TransactionContext);
-  if (!context) {
-    throw new Error(
-      "useTransactions must be used within a TransactionProvider"
-    );
-  }
-  return context;
-};
+  },
+}));

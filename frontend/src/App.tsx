@@ -1,19 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
 import AppRoutes from "./routes/AppRoutes";
 import { ToastContainer } from "react-toastify";
-import { TransactionProvider } from "./context/TransactionContext";
+import { useAuthStore } from "./store/useAuth";
 
 const App: React.FC = () => {
+  const { initialize } = useAuthStore();
+
+  useEffect(() => {
+    initialize();
+  }, []);
+
   return (
     <Router>
-      <AuthProvider>
-        <TransactionProvider>
-          <AppRoutes />
-          <ToastContainer position="top-right" autoClose={3000} theme="coloured"/>
-        </TransactionProvider>
-      </AuthProvider>
+      <AppRoutes />
+      <ToastContainer position="top-right" autoClose={3000} theme="coloured" />
     </Router>
   );
 };

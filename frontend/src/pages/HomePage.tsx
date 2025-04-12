@@ -1,9 +1,9 @@
-import { useAuth } from "../context/AuthContext";
-import { useTransaction } from "../context/TransactionContext";
+import { useAuthStore } from "../store/useAuth";
+import { useTransactionStore } from "../store/transactionStore";
 
 const HomePage = () => {
-  const { user } = useAuth();
-  const { transactions } = useTransaction();
+  const { user } = useAuthStore();
+  const { transactions } = useTransactionStore();
   if (!user) {
     return <h1>No user detected</h1>;
   }
