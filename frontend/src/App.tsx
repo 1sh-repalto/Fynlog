@@ -14,7 +14,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <AppRoutes />
-      <ToastContainer position="top-right" autoClose={3000} theme="coloured" />
+      <ToastContainer position="top-right" autoClose={3000} theme="dark" />
     </Router>
   );
 };
