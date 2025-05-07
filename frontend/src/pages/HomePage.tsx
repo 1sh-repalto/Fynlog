@@ -2,12 +2,15 @@ import { useAuthStore } from "../store/useAuth";
 import Navbar from "../components/Navbar";
 import PieChart from "../components/PieChart";
 import AddTransactionButton from "../components/AddTransactionButton";
+import { useState } from "react";
 
 const HomePage = () => {
   const { user } = useAuthStore();
   if (!user) {
     return <h1>No user detected</h1>;
   }
+
+  const [timePeriod, setTimePeriod] = useState("");
 
   return (
     <>
@@ -20,8 +23,16 @@ const HomePage = () => {
           <p className="text-neutral text-md italic">
             Here's your financial summary for{" "}
           </p>
-          <select className="w-auto p-1 pl-2 rounded-md bg-lightDark border text-md italic mt-2">
-            <option value={""} disabled selected hidden>Select Time Period</option>
+          <select
+            value={timePeriod}
+            className="w-auto p-1 pl-2 rounded-md bg-lightDark border text-md italic mt-2"
+            onChange={(e) => {
+              setTimePeriod(e.target.value)
+            }}
+          >
+            <option value={""} disabled hidden>
+              Select Time Period
+            </option>
             <option value={"weekly"}>this week</option>
             <option value={"monthly"}>this month</option>
             <option value={"yearly"}>this year</option>
@@ -47,22 +58,22 @@ const HomePage = () => {
             </div>
           </div>
           <div className="flex flex-col md:flex-row gap-4 mt-4">
-              <PieChart
-                title="Income Breakdown"
-                data={[
-                  { label: "Salary", value: 1200, color: "#00f1a1" },
-                  { label: "Freelance", value: 500, color: "#00c3ff" },
-                  { label: "Other", value: 300, color: "#00e500" },
-                ]}
-              />
-              <PieChart
-                title="Expense Breakdown"
-                data={[
-                  { label: "Food", value: 600, color: "#ff5961" },
-                  { label: "Rent", value: 800, color: "#ffbd00" },
-                  { label: "Other", value: 200, color: "#ff00ee" },
-                ]}
-              />
+            <PieChart
+              title="Income Breakdown"
+              data={[
+                { label: "Salary", value: 1200, color: "#00f1a1" },
+                { label: "Freelance", value: 500, color: "#00c3ff" },
+                { label: "Other", value: 300, color: "#00e500" },
+              ]}
+            />
+            <PieChart
+              title="Expense Breakdown"
+              data={[
+                { label: "Food", value: 600, color: "#ff5961" },
+                { label: "Rent", value: 800, color: "#ffbd00" },
+                { label: "Other", value: 200, color: "#ff00ee" },
+              ]}
+            />
           </div>
         </div>
         <AddTransactionButton />

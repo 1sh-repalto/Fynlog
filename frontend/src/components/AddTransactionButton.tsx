@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Plus, ChevronDown } from "lucide-react";
 import { Modal } from "./Modal";
+import { incomeCategories, expenseCategories } from "../data/defautCategories";
 
 export default function AddTransactionButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,9 +11,6 @@ export default function AddTransactionButton() {
 
   const [type, setType] = useState("");
   const [category, setCategory] = useState("");
-
-  const incomeCategories = ["Salary", "Freelance", "Investments", "Others"];
-  const expenseCategories = ["Food", "Transport", "Bills", "Luxury", "Others"];
 
   const categories = type === "income" ? incomeCategories : expenseCategories;
 
@@ -46,7 +44,7 @@ export default function AddTransactionButton() {
       </div>
 
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <h2 className="text-3xl font-semibold mb-4 ml-2">Add Transaction</h2>
+        <h2 className="text-3xl font-semibold ml-4">Add Transaction</h2>
         <form
           onSubmit={handleSubmit}
           className="py-8 px-16 flex-col h-5/6 space-y-2"
@@ -68,7 +66,7 @@ export default function AddTransactionButton() {
           />
 
           <label
-            htmlFor="category"
+            htmlFor="type"
             className="pl-2 font-semibold block w-4/5 mx-auto"
           >
             Type
@@ -76,10 +74,10 @@ export default function AddTransactionButton() {
           <div className="relative w-7/8 mx-auto mb-6">
             <select
               required
+              value={type}
               className={`block appearance-none bg-lighterDark w-full rounded-md px-4 p-2 focus:border-neutral ${
                 type === "" ? "text-neutral-400" : "text-white"
               }`}
-              defaultValue=""
               onChange={(e) => {
                 setType(e.target.value);
                 setCategory("");
@@ -107,28 +105,36 @@ export default function AddTransactionButton() {
           <div className="relative w-7/8 mx-auto mb-6">
             <select
               required
+              value={category}
               className={`block appearance-none bg-lighterDark w-full h-10 rounded-md pl-4 pr-10 ${
                 category === "" ? "text-neutral-400" : "text-neutral"
               }`}
-              defaultValue=""
               onChange={(e) => {
                 setCategory(e.target.value);
               }}
+              disabled={!type}
             >
               <option value="" disabled hidden>
                 Select transaction category
               </option>
               {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
+                <option key={cat.id} value={cat.name}>
+                  {cat.name}
                 </option>
               ))}
             </select>
 
             <ChevronDown
               size={20}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral cursor-pointer"
+              className={`pointer-events-none absolute right-3 top-${type ? "1/2" : "1/4"} -translate-y-1/2 text-${type ? "neutral" : "neutral-400"} cursor-pointer`}
             />
+
+            {!type && (
+              <p className="italic text-xs text-warning mt-2">
+                Please select the transaction type first to enable
+                category selection.
+              </p>
+            )}
           </div>
 
           <label
@@ -138,9 +144,8 @@ export default function AddTransactionButton() {
             Description
           </label>
           <textarea
-            required
             id="description"
-            rows={5}
+            rows={3}
             placeholder="Add some description"
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
