@@ -1,6 +1,7 @@
 import { useAuthStore } from "../store/useAuth";
 import Navbar from "../components/Navbar";
 import PieChart from "../components/PieChart";
+import AddTransactionButton from "../components/AddTransactionButton";
 
 const HomePage = () => {
   const { user } = useAuthStore();
@@ -64,6 +65,7 @@ const HomePage = () => {
               />
           </div>
         </div>
+        <AddTransactionButton />
       </main>
     </>
   );

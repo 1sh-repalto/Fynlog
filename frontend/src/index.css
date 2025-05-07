@@ -19,3 +19,15 @@ html, body, #root {
     margin: 0;
     padding: 0;
 }
+
+/* Remove number input's up/down arrows in Chrome, Safari, Edge */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove number input's up/down arrows in Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
