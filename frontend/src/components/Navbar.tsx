@@ -22,31 +22,31 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <nav className="h-16 px-20 flex justify-between items-center bg-[#191919] shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
+    <nav className="h-16 px-20 flex justify-between items-center bg-lightDark shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
       <div className="w-3/10 flex justify-start items-center">
         <h2 className="text-2xl w-3/10">MyApp</h2>
       </div>
       <div className="w-2/5 justify-between items-center hidden md:flex">
         <Link
           to="/home"
-          className={`hover:bg-[#303030] h-10 w-20 rounded-sm flex justify-center items-center transition duration-200 ease-in-out ${
-            location.pathname === "/home" && "bg-[#303030]"
+          className={`hover:bg-lighterDark h-10 w-auto px-2 rounded-sm flex justify-center items-center transition duration-200 ease-in-out ${
+            location.pathname === "/home" && "bg-lighterDark"
           }`}
         >
-          Home
+          Dashboard
         </Link>
         <Link
           to="/page2"
-          className={`hover:bg-[#303030] h-10 w-20 rounded-sm flex justify-center items-center transition duration-200 ease-in-out ${
-            location.pathname === "/page2" && "bg-[#303030]"
+          className={`hover:bg-lighterDark h-10 w-auto px-2 rounded-sm flex justify-center items-center transition duration-200 ease-in-out ${
+            location.pathname === "/page2" && "bg-lighterDark"
           }`}
         >
-          Page2
+          Transactions
         </Link>
         <Link
           to="/page3"
-          className={`hover:bg-[#303030] h-10 w-20 rounded-sm flex justify-center items-center transition duration-200 ease-in-out ${
-            location.pathname === "/page3" && "bg-[#303030]"
+          className={`hover:bg-lighterDark h-10 w-auto px-2 rounded-sm flex justify-center items-center transition duration-200 ease-in-out ${
+            location.pathname === "/page3" && "bg-lighterDark"
           }`}
         >
           Page3
@@ -58,8 +58,8 @@ const Navbar: React.FC = () => {
       >
         <button
           aria-label="Toggle dropdown menu"
-          className={`h-12 w-12 flex justify-center items-center rounded-sm transition duration-200 ease-in-out hover:opacity-70 hover:bg-[#303030] ${
-            dropdownMenu && "bg-[#303030]"
+          className={`h-12 w-12 flex justify-center items-center rounded-sm transition duration-200 ease-in-out hover:opacity-70 hover:bg-lighterDark ${
+            dropdownMenu && "bg-lighterDark"
           }`}
           onClick={() => setDropdownMenu((prev) => !prev)}
         >
