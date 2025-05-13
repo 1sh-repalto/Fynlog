@@ -126,13 +126,15 @@ export default function AddTransactionButton() {
 
             <ChevronDown
               size={20}
-              className={`pointer-events-none absolute right-3 top-${type ? "1/2" : "1/4"} -translate-y-1/2 text-${type ? "neutral" : "neutral-400"} cursor-pointer`}
+              className={`pointer-events-none absolute right-3 -translate-y-1/2 cursor-pointer ${
+                type ? "top-1/2 text-neutral" : "top-1/4 text-neutral-400"
+              }`}
             />
 
             {!type && (
               <p className="italic text-xs text-warning mt-2">
-                Please select the transaction type first to enable
-                category selection.
+                Please select the transaction type first to enable category
+                selection.
               </p>
             )}
           </div>
