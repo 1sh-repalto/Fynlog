@@ -2,7 +2,8 @@ import { useAuthStore } from "../store/useAuth";
 import Navbar from "../components/Navbar";
 import PieChart from "../components/PieChart";
 import AddTransactionButton from "../components/AddTransactionButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useTransactionStore } from "../store/transactionStore";
 
 const HomePage = () => {
   const { user } = useAuthStore();
@@ -11,6 +12,13 @@ const HomePage = () => {
   }
 
   const [timePeriod, setTimePeriod] = useState("");
+  const { transactions, loading, fetchTransactions } = useTransactionStore();
+
+  useEffect(() => {
+    if (timePeriod) {
+      fetchTransactions(timePeriod as "weekly" | "monthly" | "yearly");
+    }
+  }, [timePeriod]);
 
   return (
     <>
@@ -27,7 +35,7 @@ const HomePage = () => {
             value={timePeriod}
             className="w-auto p-1 pl-2 rounded-md bg-lightDark border text-md italic mt-2"
             onChange={(e) => {
-              setTimePeriod(e.target.value)
+              setTimePeriod(e.target.value);
             }}
           >
             <option value={""} disabled hidden>

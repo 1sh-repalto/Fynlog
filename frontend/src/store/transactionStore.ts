@@ -22,7 +22,7 @@ interface TransactionStore {
   transactions: Transaction[];
   categories: Category[];
   loading: boolean;
-  fetchTransactions: () => Promise<void>;
+  fetchTransactions: (timePeriod?: "weekly" | "monthly" | "yearly") => Promise<void>;
   fetchCategories: () => Promise<void>;
   addTransaction: (transaction: Omit<Transaction, "id">) => Promise<void>;
 }
@@ -32,10 +32,15 @@ export const useTransactionStore = create<TransactionStore>((set) => ({
   categories: [],
   loading: true,
 
-  fetchTransactions: async () => {
+  fetchTransactions: async (timePeriod?: "weekly" | "monthly" | "yearly") => {
     set({ loading: true });
     try {
-      const response = await fetch("http://localhost:3000/transaction", {
+      let url = "http://localhost:3000/transaction";
+      if(timePeriod) {
+        url += `?period=${timePeriod}`;
+      }
+
+      const response = await fetch(url, {
         method: "GET",
         credentials: "include",
       });

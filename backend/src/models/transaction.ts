@@ -1,7 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/db";
 import User from "./user";
-import Category from "./category";
 
 interface TransactionAttributes {
   id: number;
@@ -44,8 +43,6 @@ Transaction.init(
     categoryId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: Category, key: "id" },
-      onDelete: "SET NULL",
     },
     amount: {
       type: DataTypes.DECIMAL(10, 2),
@@ -72,8 +69,5 @@ Transaction.init(
 
 User.hasMany(Transaction, { foreignKey: "userId" });
 Transaction.belongsTo(User, { foreignKey: "userId" });
-
-Category.hasMany(Transaction, { foreignKey: "categoryId" });
-Transaction.belongsTo(Category, { foreignKey: "categoryId" });
 
 export default Transaction;

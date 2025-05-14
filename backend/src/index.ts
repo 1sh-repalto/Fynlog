@@ -6,7 +6,6 @@ import sequelize from "./config/db";
 import authRouter from "./routes/authRoutes";
 import userRouter from "./routes/userRoutes";
 import transactionRouter from "./routes/transactionRoutes";
-import categoryRouter from "./routes/categoryRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
 
 dotenv.config();
@@ -27,7 +26,6 @@ app.use(
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/transaction", transactionRouter);
-app.use("/category", categoryRouter);
 
 // global error handler
 app.use(errorHandler);

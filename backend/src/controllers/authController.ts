@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import { AppError } from "../middlewares/errorHandler";
-import { ensureDefaultCategory } from "../helper/categoryService";
 
 dotenv.config();
 
@@ -43,7 +42,6 @@ export const authSignup = async (
       password: hashedPassword,
     });
 
-    await ensureDefaultCategory(newUser.id);
     const accessToken = generateToken(newUser);
 
     res.cookie("accessToken", accessToken, {

@@ -1,8 +1,10 @@
-// src/components/AddTransactionButton.tsx
 import React, { useState } from "react";
 import { Plus, ChevronDown } from "lucide-react";
 import { Modal } from "./Modal";
 import { incomeCategories, expenseCategories } from "../data/defautCategories";
+import { useAuthStore } from "../store/useAuth";
+import { useTransactionStore } from "../store/transactionStore";
+import { toast } from "react-toastify";
 
 export default function AddTransactionButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,15 +16,39 @@ export default function AddTransactionButton() {
 
   const categories = type === "income" ? incomeCategories : expenseCategories;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { user } = useAuthStore();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ amount, desc });
-    // TODO: Add backend/api call or state update here
-    setAmount("");
-    setDesc("");
-    setCategory("");
-    setType("");
-    setIsOpen(false);
+
+    const selectedCategory = categories.find((cat) => cat.name === category);
+
+    if (!selectedCategory || !user) {
+      console.error("Invalid category or user not found");
+      return;
+    }
+
+    const transactionData = {
+      userId: user.id,
+      categoryId: selectedCategory.id,
+      amount: parseFloat(amount),
+      type: (type as "income") || "expense",
+      date: new Date(),
+      description: desc.trim() || undefined,
+    };
+
+    try {
+      const addTransaction = useTransactionStore.getState().addTransaction;
+      await addTransaction(transactionData);
+
+      setAmount("");
+      setDesc("");
+      setCategory("");
+      setType("");
+      setIsOpen(false);
+    } catch (err) {
+      toast.error("Error while fetching data.");
+    }
   };
 
   return (

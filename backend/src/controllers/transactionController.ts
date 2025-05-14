@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../middlewares/errorHandler";
 import Transaction from "../models/transaction";
-import Category from "../models/category";
 
 interface AuthenticatedRequest extends Request {
   user?: { id: number; email: string; iat: number; exp: number };
@@ -16,12 +15,35 @@ export const getTransactions = async (
     if (!req.user) {
       throw new AppError("Unauthorized", 401);
     }
-
+    const { period } = req.query;
     const userId = req.user.id;
 
-    const allTransactions = await Transaction.findAll({ where: { userId } });
+    let startDate;
+    const now = new Date();
 
-    res.status(200).json(allTransactions);
+    if (period == "weekly") {
+      startDate = new Date(now);
+      startDate.setDate(now.getDate() - now.getDay());
+    } else if (period === "monthly") {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    } else if (period === "yearly") {
+      startDate = new Date(now.getFullYear(), 0, 1);
+    }
+
+    const where: any = { userId };
+    if (startDate) {
+      where.date = {
+        $gte: startDate,
+        $lte: now,
+      };
+    }
+
+    const transactions = await Transaction.findAll({
+      where,
+      order: [['date', 'DESC']],
+    });
+
+    res.status(200).json(transactions);
   } catch (error) {
     next(error);
   }
@@ -39,28 +61,6 @@ export const createTransaction = async (
 
     const userId = req.user.id;
     let { categoryId, amount, type, description } = req.body;
-
-    if (categoryId) {
-      const category = await Category.findOne({
-        where: { id: categoryId, userId },
-      });
-      if (!category) {
-        throw new AppError(
-          "Invalid category: category does not belong to user.",
-          401
-        );
-      }
-    } else {
-      const defaultCategory = await Category.findOne({
-        where: { userId, isDefault: true },
-      });
-
-      if (!defaultCategory) {
-        throw new AppError("Default category does not exist.", 404);
-      }
-
-      categoryId = defaultCategory.id;
-    }
 
     const transaction = await Transaction.create({
       userId,
