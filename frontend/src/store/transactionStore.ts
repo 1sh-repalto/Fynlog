@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { toast } from "react-toastify";
+import { fetchWithAuth } from "../utils/fetchWithAuth";
 
 export interface Transaction {
   id: number;
@@ -11,19 +12,12 @@ export interface Transaction {
   description?: string;
 }
 
-export interface Category {
-  id: number;
-  userId: number;
-  name: string;
-  isDefault: boolean;
-}
-
 interface TransactionStore {
   transactions: Transaction[];
-  categories: Category[];
   loading: boolean;
-  fetchTransactions: (timePeriod?: "weekly" | "monthly" | "yearly") => Promise<void>;
-  fetchCategories: () => Promise<void>;
+  selectedMonth: string;
+  setSelectedMonth: (month: string) => void;
+  fetchTransactions: (selectedMonth: String) => Promise<void>;
   addTransaction: (transaction: Omit<Transaction, "id">) => Promise<void>;
 }
 
@@ -31,57 +25,44 @@ export const useTransactionStore = create<TransactionStore>((set) => ({
   transactions: [],
   categories: [],
   loading: true,
+  selectedMonth: `${new Date().getFullYear()}-${new Date().getMonth() + 1}`,
 
-  fetchTransactions: async (timePeriod?: "weekly" | "monthly" | "yearly") => {
+  setSelectedMonth: (month) => set({ selectedMonth: month }),
+
+  fetchTransactions: async (selectedMonth: String) => {
     set({ loading: true });
     try {
       let url = "http://localhost:3000/transaction";
-      if(timePeriod) {
-        url += `?period=${timePeriod}`;
+      if (selectedMonth) {
+        url += `?period=${selectedMonth}`;
       }
 
-      const response = await fetch(url, {
+      const response = await fetchWithAuth(url, {
         method: "GET",
-        credentials: "include",
       });
 
       if (!response.ok) throw new Error("Failed to fetch transactions.");
       const data = await response.json();
 
       set({ transactions: data });
-    } catch (error: any) {
-      toast.error(error.message || "Error fetching transactions");
     } finally {
       set({ loading: false });
     }
   },
 
-  fetchCategories: async () => {
-    try {
-      const response = await fetch("http://localhost:3000/category", {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!response.ok) throw new Error("Failed to get categories.");
-      const data = await response.json();
-
-      set({ categories: data });
-    } catch (error: any) {
-      toast.error(error.message || "Error fetching categories.");
-    }
-  },
-
   addTransaction: async (transaction) => {
     try {
-      const response = await fetch("http://localhost:3000/transaction", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(transaction),
-      });
+      const response = await fetchWithAuth(
+        "http://localhost:3000/transaction",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(transaction),
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to add transaction.");
       const newTransaction = await response.json();

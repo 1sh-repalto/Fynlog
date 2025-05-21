@@ -7,6 +7,7 @@ import authRouter from "./routes/authRoutes";
 import userRouter from "./routes/userRoutes";
 import transactionRouter from "./routes/transactionRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
+import Transaction from "./models/transaction";
 
 dotenv.config();
 
@@ -21,6 +22,18 @@ app.use(
     credentials: true, // Allow cookies to be sent
   })
 );
+
+// for dev use only - function to clear transactions
+// async function clearTransactions() {
+//   try {
+//     await Transaction.destroy({ where: {} }); // deletes all rows
+//     console.log("✅ All transactions deleted.");
+//   } catch (error) {
+//     console.error("❌ Error deleting transactions:", error);
+//   }
+// }
+
+// clearTransactions();
 
 // routes
 app.use("/auth", authRouter);
