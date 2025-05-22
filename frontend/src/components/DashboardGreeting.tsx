@@ -7,8 +7,9 @@ const DashboardGreeting = () => {
   if (!user) {
     return <h1>No user detected</h1>;
   }
-  
-  const { fetchTransactions, selectedMonth, setSelectedMonth } = useTransactionStore();
+
+  const { fetchTransactions, selectedMonth, setSelectedMonth } =
+    useTransactionStore();
 
   const recentMonths = Array.from({ length: 5 }, (_, i) => {
     const date = new Date();
@@ -38,7 +39,7 @@ const DashboardGreeting = () => {
         </p>
         <select
           value={selectedMonth}
-          className="w-auto p-1 pl-2 rounded-md bg-lightDark border text-md italic mt-2"
+          className="w-auto p-2 rounded-md bg-lightDark border text-md italic mt-2"
           onChange={(e) => {
             setSelectedMonth(e.target.value);
           }}

@@ -21,10 +21,10 @@ interface TransactionStore {
   addTransaction: (transaction: Omit<Transaction, "id">) => Promise<void>;
 }
 
-export const useTransactionStore = create<TransactionStore>((set) => ({
+export const useTransactionStore = create<TransactionStore>((set, get) => ({
   transactions: [],
   categories: [],
-  loading: true,
+  loading: false,
   selectedMonth: `${new Date().getFullYear()}-${new Date().getMonth() + 1}`,
 
   setSelectedMonth: (month) => set({ selectedMonth: month }),
@@ -51,6 +51,7 @@ export const useTransactionStore = create<TransactionStore>((set) => ({
   },
 
   addTransaction: async (transaction) => {
+    set({ loading: true });
     try {
       const response = await fetchWithAuth(
         "http://localhost:3000/transaction",
@@ -68,11 +69,17 @@ export const useTransactionStore = create<TransactionStore>((set) => ({
       const newTransaction = await response.json();
 
       set((state) => ({
-        transactions: [...state.transactions, newTransaction],
+        transactions: [newTransaction, ...state.transactions],
       }));
+
+      const selectedMonth = get().selectedMonth;
+      await get().fetchTransactions(selectedMonth);
+
       toast.success("Transaction added successfully");
     } catch (error: any) {
       toast.error(error.message || "Error adding transaction");
+    } finally {
+      set({ loading: false });
     }
   },
 }));

@@ -17,6 +17,7 @@ export default function AddTransactionButton() {
   const categories = type === "income" ? incomeCategories : expenseCategories;
 
   const { user } = useAuthStore();
+  const addTransaction = useTransactionStore((state) => state.addTransaction);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +39,6 @@ export default function AddTransactionButton() {
     };
 
     try {
-      const addTransaction = useTransactionStore.getState().addTransaction;
       await addTransaction(transactionData);
 
       setAmount("");

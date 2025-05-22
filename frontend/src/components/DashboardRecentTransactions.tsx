@@ -1,19 +1,34 @@
 import { Link } from "react-router-dom";
 import { expenseCategories, incomeCategories } from "../data/defautCategories";
 import { useTransactionStore } from "../store/transactionStore";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
+import { useEffect } from "react";
 
 const DashboardRecentTransactions = () => {
-  const { transactions } = useTransactionStore();
+  const transactions = useTransactionStore((state) => state.transactions);
+  const loading = useTransactionStore((state) => state.loading);
+  const fetchTransactions = useTransactionStore((state) => state.fetchTransactions);
+  const selectedMonth = useTransactionStore((state) => state.selectedMonth);
 
-  const recent3transactions = [...transactions];
+  const recent3transactions = [...transactions]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 3);
+
+  useEffect(() => {
+    fetchTransactions(selectedMonth);
+  }, [fetchTransactions, selectedMonth]);
+
   return (
     <div className="md:w-13/20 md:ml-2 w-full h-109 p-3 bg-lighterDark rounded-md">
       <h1 className="text-xl  text-neutral-500 font-semibold ml-2">
         Recent Transactions
       </h1>
       <ul className="mt-4 space-y-3">
-        {recent3transactions.length === 0 ? (
+        {loading ? (
+          <div className="flex justify-center items-center mt-40">
+            <Loader2 className="animate-spin text-neutral-400" size={50} />
+          </div>
+        ) : recent3transactions.length === 0 ? (
           <p className="text-neutral-400 italic text-center font-semibold text-3xl mt-40">
             No recent transactions
           </p>
@@ -58,14 +73,16 @@ const DashboardRecentTransactions = () => {
           })
         )}
       </ul>
-      <div className="flex justify-center">
-        <Link to={"/page2"}>
-          <button className="bg-lightDark hover:bg-dark active:bg-lightDark h-auto mt-3 py-2 px-15 rounded-md font-semibold text-lg cursor-pointer flex items-center gap-2">
-            See all
-            <ArrowRight />
-          </button>
-        </Link>
-      </div>
+      {!loading && (
+        <div className="flex justify-center">
+          <Link to={"/page2"}>
+            <button className="bg-lightDark hover:bg-dark active:bg-lightDark h-auto mt-3 py-2 px-15 rounded-md font-semibold text-lg cursor-pointer flex items-center gap-2 transition-transform duration-200 transform hover:scale-105">
+              See all
+              <ArrowRight size={22} />
+            </button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
