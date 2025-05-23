@@ -73,7 +73,7 @@ const DashboardRecentTransactions = () => {
           })
         )}
       </ul>
-      {!loading && (
+      {(!loading && recent3transactions.length !== 0) && (
         <div className="flex justify-center">
           <Link to={"/page2"}>
             <button className="bg-lightDark hover:bg-dark active:bg-lightDark h-auto mt-3 py-2 px-15 rounded-md font-semibold text-lg cursor-pointer flex items-center gap-2 transition-transform duration-200 transform hover:scale-105">
