@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../middlewares/errorHandler";
 import Transaction from "../models/transaction";
+import { Op } from "sequelize";
 
 interface AuthenticatedRequest extends Request {
   user?: { id: number; email: string; iat: number; exp: number };
@@ -15,8 +16,12 @@ export const getTransactions = async (
     if (!req.user) {
       throw new AppError("Unauthorized", 401);
     }
-    const { period } = req.query;
+
+    const { period, limit = "10", offset = "0" } = req.query;
     const userId = req.user.id;
+
+    const parsedLimit = parseInt(limit as string);
+    const parsedOffset = parseInt(offset as string); // ✅ Fixed here
 
     let startDate;
     const now = new Date();
@@ -33,21 +38,27 @@ export const getTransactions = async (
     const where: any = { userId };
     if (startDate) {
       where.date = {
-        $gte: startDate,
-        $lte: now,
+        [Op.gte]: startDate,
+        [Op.lte]: now,
       };
     }
 
-    const transactions = await Transaction.findAll({
+    const { rows: transactions, count } = await Transaction.findAndCountAll({
       where,
-      order: [['date', 'DESC']],
+      order: [["date", "DESC"]],
+      limit: parsedLimit,
+      offset: parsedOffset,
     });
 
-    res.status(200).json(transactions);
+    res.status(200).json({
+      transactions,
+      total: count,
+    });
   } catch (error) {
     next(error);
   }
 };
+
 
 export const createTransaction = async (
   req: AuthenticatedRequest,

@@ -1,18 +1,35 @@
 import { Link } from "react-router-dom";
 import { expenseCategories, incomeCategories } from "../data/defautCategories";
-import { useTransactionStore } from "../store/transactionStore";
+import { Transaction, useTransactionStore } from "../store/transactionStore";
 import { ArrowRight, Loader2 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import SeeTransactionModal from "./SeeTransactionModal";
 
 const DashboardRecentTransactions = () => {
   const transactions = useTransactionStore((state) => state.transactions);
   const loading = useTransactionStore((state) => state.loading);
-  const fetchTransactions = useTransactionStore((state) => state.fetchTransactions);
+  const fetchTransactions = useTransactionStore(
+    (state) => state.fetchTransactions
+  );
   const selectedMonth = useTransactionStore((state) => state.selectedMonth);
 
   const recent3transactions = [...transactions]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 3);
+
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (tx: Transaction) => {
+    setSelectedTransaction(tx);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedTransaction(null);
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     fetchTransactions(selectedMonth);
@@ -44,7 +61,8 @@ const DashboardRecentTransactions = () => {
             return (
               <li
                 key={tx.id}
-                className="h-24 px-5 flex justify-between items-center bg-lightDark p-3 rounded-md"
+                onClick={() => openModal(tx)}
+                className="h-24 px-8 flex justify-between items-center bg-lightDark p-3 rounded-md hover:scale-102 cursor-pointer transition-transform duration-200 transform"
               >
                 <div className="h-full flex flex-col justify-center">
                   <p className="text-neutral font-medium text-lg">
@@ -72,10 +90,15 @@ const DashboardRecentTransactions = () => {
             );
           })
         )}
+        <SeeTransactionModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          transaction={selectedTransaction}
+        />
       </ul>
-      {(!loading && recent3transactions.length !== 0) && (
+      {!loading && recent3transactions.length !== 0 && (
         <div className="flex justify-center">
-          <Link to={"/page2"}>
+          <Link to={"/transactions"}>
             <button className="bg-lightDark hover:bg-dark active:bg-lightDark h-auto mt-3 py-2 px-15 rounded-md font-semibold text-lg cursor-pointer flex items-center gap-2 transition-transform duration-200 transform hover:scale-105">
               See all
               <ArrowRight size={22} />

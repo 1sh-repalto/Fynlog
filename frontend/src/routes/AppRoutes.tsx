@@ -5,6 +5,7 @@ import HomePage from "../pages/HomePage";
 import LandingPage from "../pages/LandingPage";
 import AuthPage from "../pages/AuthPage";
 import Layout from "../components/Layout";
+import TransactionsPage from "../pages/TransactionsPage";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<HomePage />} />
+          <Route path="/transactions" element={<TransactionsPage />} />
         </Route>
 
         <Route path="/" element={<LandingPage />} />

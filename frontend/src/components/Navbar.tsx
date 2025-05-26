@@ -22,7 +22,7 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <nav className="h-16 px-20 flex justify-between items-center bg-lightDark shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
+    <nav className="h-16 px-20 flex justify-between items-center bg-lightDark shadow-[0_4px_12px_rgba(0,0,0,0.3)] sticky top-0 z-50">
       <div className="w-3/10 flex justify-start items-center">
         <h2 className="text-2xl w-3/10">MyApp</h2>
       </div>
@@ -36,9 +36,9 @@ const Navbar: React.FC = () => {
           Dashboard
         </Link>
         <Link
-          to="/page2"
+          to="/transactions"
           className={`hover:bg-lighterDark h-10 w-auto px-2 rounded-sm flex justify-center items-center transition duration-200 ease-in-out ${
-            location.pathname === "/page2" && "bg-lighterDark"
+            location.pathname === "/transactions" && "bg-lighterDark"
           }`}
         >
           Transactions

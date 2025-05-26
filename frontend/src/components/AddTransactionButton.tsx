@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Plus, ChevronDown } from "lucide-react";
-import { Modal } from "./Modal";
+import { Modal } from "./AddTransactionModal";
 import { incomeCategories, expenseCategories } from "../data/defautCategories";
 import { useAuthStore } from "../store/useAuth";
 import { useTransactionStore } from "../store/transactionStore";
