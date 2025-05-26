@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Transaction } from "../store/transactionStore";
 import { incomeCategories, expenseCategories } from "../data/defautCategories";
 import { X } from "lucide-react";
@@ -14,6 +14,18 @@ const SeeTransactionModal: React.FC<SeeTransactionModalProps> = ({
   onClose,
   transaction,
 }) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+  
   if (!isOpen || !transaction) return null;
 
   const { type, amount, date, description, categoryId } = transaction;
@@ -21,8 +33,14 @@ const SeeTransactionModal: React.FC<SeeTransactionModalProps> = ({
   const category = allCategories.find((cat) => cat.id === categoryId);
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="h-auto w-[90%] max-w-xl bg-lightDark rounded-lg border border-neutral p-4 mx-5 relative">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="h-auto w-[90%] max-w-xl bg-lightDark rounded-lg border border-neutral p-4 mx-5 relative"
+      >
         <button
           className="absolute top-3 right-3 text-xl font-bold cursor-pointer bg-rose-800 rounded-sm p-1 hover:bg-rose-700"
           onClick={onClose}

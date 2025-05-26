@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Plus, ChevronDown } from "lucide-react";
-import { Modal } from "./AddTransactionModal";
+import { AddTransactionModal } from "./AddTransactionModal";
 import { incomeCategories, expenseCategories } from "../data/defautCategories";
 import { useAuthStore } from "../store/useAuth";
 import { useTransactionStore } from "../store/transactionStore";
@@ -69,7 +69,7 @@ export default function AddTransactionButton() {
         </div>
       </div>
 
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+      <AddTransactionModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <h2 className="text-3xl font-semibold ml-4">Add Transaction</h2>
         <form
           onSubmit={handleSubmit}
@@ -189,7 +189,7 @@ export default function AddTransactionButton() {
             </button>
           </div>
         </form>
-      </Modal>
+      </AddTransactionModal>
     </>
   );
 }
