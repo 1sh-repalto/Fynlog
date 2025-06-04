@@ -1,33 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-@import "tailwindcss"; 
+@import 'tailwindcss';
 
 @theme {
-    --color-primary: #161F27;
-    --color-secondary: #27AE60;
-    --color-neutral: #ECF0F1;
-    --color-dark: #141414;
-    --color-lightDark: #191919;
-    --color-lighterDark: #303030;
-    --color-accent: #5890CB;
-    --color-warning: #E67E22;
-    --font-montserrat: "Montserrat";
+  --color-primary: #161f27;
+  --color-secondary: #27ae60;
+  --color-neutral: #ecf0f1;
+  --color-dark: #141414;
+  --color-lightDark: #191919;
+  --color-lighterDark: #303030;
+  --color-accent: #5890cb;
+  --color-warning: #e67e22;
+  --font-montserrat: 'Montserrat';
 }
 
-html, body, #root {
-    @apply bg-dark text-neutral;
-    font-family: 'Montserrat', sans-serif;
-    margin: 0;
-    padding: 0;
+html,
+body,
+#root {
+  @apply bg-dark text-neutral;
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 /* Remove number input's up/down arrows in Chrome, Safari, Edge */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* Remove number input's up/down arrows in Firefox */
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
 }

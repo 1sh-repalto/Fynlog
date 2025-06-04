@@ -1,6 +1,6 @@
-import { useState } from "react";
-import LoginForm from "../components/LoginForm";
-import SignupForm from "../components/SignupForm";
+import { useState } from 'react';
+import LoginForm from '../components/LoginForm';
+import SignupForm from '../components/SignupForm';
 
 const AuthPage = () => {
   const [login, setLogin] = useState<boolean>(false);

@@ -1,56 +1,27 @@
-const API_BASE_URL = "http://localhost:3000/auth";
+import { User } from '../types';
+import { clearUser } from '../utils/storage';
+import api from './axios';
 
-interface User {
-  id: number;
-  email: string;
+export const login = async (data: { email: string; password: string }): Promise<User> => {
+  const res = await api.post<User>('/auth/login', data);
+  return res.data;
+};
+
+export const signup = async (data: {
   name: string;
-}
-
-const fetchWrapper = async (url: string, options: RequestInit) => {
-  try {
-    const response = await fetch(url, {
-      ...options,
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Something went wrong.");
-    }
-
-    return response.json();
-  } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : "Unknown error occurred."
-    );
-  }
+  email: string;
+  password: string;
+}): Promise<User> => {
+  const res = await api.post<User>('/auth/signup', data);
+  return res.data;
 };
 
-// signup
-export const signup = async (
-  name: string,
-  email: string,
-  password: string
-): Promise<User> => {
-  return fetchWrapper(`${API_BASE_URL}/signup`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password }),
-  });
+export const logout = async (): Promise<void> => {
+  await api.post('/auth/logout');
+  clearUser();
 };
 
-// login
-export const login = async (email: string, password: string): Promise<User> => {
-  return fetchWrapper(`${API_BASE_URL}/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-};
-
-// logout
-export const logout = async (): Promise<{ message: string }> => {
-  return fetchWrapper(`${API_BASE_URL}/logout`, {
-    method: "POST",
-  });
+export const validateSession = async (): Promise<User> => {
+  const res = await api.get<User>('/auth/validate');
+  return res.data;
 };

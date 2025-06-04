@@ -1,101 +1,63 @@
-import { create } from "zustand";
-import { login, logout, signup } from "../api/auth";
-import { toast } from "react-toastify";
+import { create } from 'zustand';
+import { login, signup, logout, validateSession } from '../api/auth';
+import { User } from '../types';
+import { clearUser, getUser, saveUser } from '../utils/storage';
+import api from '../api/axios';
 
-interface User {
-  id: number;
-  email: string;
-  name: string;
-}
-
-interface AuthStore {
+interface AuthState {
   user: User | null;
   loading: boolean;
   isAuthenticated: boolean;
-  initialize: () => Promise<void>;
-  signUp: (name: string, email: string, password: string) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
-  signOut: () => Promise<void>;
+  loginUser: (data: { email: string; password: string }) => Promise<void>;
+  signupUser: (data: { name: string; email: string; password: string }) => Promise<void>;
+  logoutUser: () => Promise<void>;
+  initializeAuth: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
-  user: null,
+export const useAuthStore = create<AuthState>((set) => ({
+  user: getUser(),
   loading: true,
   isAuthenticated: false,
 
-  initialize: async () => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      set({ user: JSON.parse(storedUser), isAuthenticated: true });
-    }
-
+  initializeAuth: async () => {
     try {
-      const response = await fetch("http://localhost:3000/auth/validate", {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!response.ok) throw new Error("Not Authenticated");
-
-      const userData = await response.json();
-
-      if (!userData) {
-        set({ user: null, isAuthenticated: false });
-        return;
+      const user = await validateSession(); // try to see if session still exists
+      saveUser(user);
+      set({ user, isAuthenticated: true });
+    } catch (err: any) {
+      if (err?.response?.status === 401 || err?.response?.status === 403) {
+        try {
+          await api.post('/auth/refresh');
+          const user = await validateSession(); // try again
+          saveUser(user);
+          set({ user, isAuthenticated: true });
+        } catch (refreshErr) {
+          clearUser();
+          set({ user: null, isAuthenticated: false });
+          console.warn('Session expired, user must log in again.');
+        }
+      } else {
+        console.error('Unexpected error during auth initialization', err);
       }
-      
-      set({
-        user: userData,
-        isAuthenticated: true,
-      });
-      localStorage.setItem("user", JSON.stringify(userData));
-    } catch (error) {
-      if (storedUser) {
-        toast.error("Session expired. Please log in again.");
-      }
-      set({ user: null, isAuthenticated: false });
-      localStorage.removeItem("user");
     } finally {
       set({ loading: false });
     }
   },
 
-  signUp: async (name, email, password) => {
-    try {
-      const data = await signup(name, email, password);
-      if (!data) throw new Error("User details not fund in response");
-
-      set({ user: data, isAuthenticated: true, loading: false });
-      localStorage.setItem("user", JSON.stringify(data));
-      toast.success("Signup successful.");
-    } catch (error: any) {
-      toast.error(
-        `Signup failed: ${error.message || "Unknown error occurred"}`
-      );
-    }
+  loginUser: async (data) => {
+    const user = await login(data);
+    saveUser(user);
+    set({ user, isAuthenticated: true });
   },
 
-  signIn: async (email, password) => {
-    try {
-      const data = await login(email, password);
-      if (!data) throw new Error("User details not found in response");
-
-      set({ user: data, isAuthenticated: true, loading: false });
-      localStorage.setItem("user", JSON.stringify(data));
-      toast.success("Login successful.");
-    } catch (error: any) {
-      toast.error(error.message || "Login failed");
-    }
+  signupUser: async (data) => {
+    const user = await signup(data);
+    saveUser(user);
+    set({ user, isAuthenticated: true });
   },
 
-  signOut: async () => {
-    try {
-      await logout();
-      set({ user: null, isAuthenticated: false, loading: false });
-      localStorage.removeItem("user");
-      toast.success("Logout successful.");
-    } catch (error: any) {
-      toast.error(error.message || "Logout failed");
-    }
+  logoutUser: async () => {
+    await logout();
+    set({ user: null, isAuthenticated: false });
   },
 }));

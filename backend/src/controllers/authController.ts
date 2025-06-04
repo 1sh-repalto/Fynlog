@@ -1,133 +1,137 @@
 import { Request, Response, NextFunction } from "express";
-import User from "../models/user";
 import bcrypt from "bcryptjs";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import dotenv from "dotenv";
+import User from "../models/user";
 import { AppError } from "../middlewares/errorHandler";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from "../utils/jwt";
+import { AuthenticatedRequest } from "../middlewares/authMiddleware";
 
-dotenv.config();
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  sameSite: "strict" as const,
+  secure: process.env.NODE_ENV === "production",
+};
 
-const ACCESS_TOKEN_EXPIRY = "15m";
-const JWT_SECRET = process.env.JWT_SECRET!;
-
-interface AuthRequest extends Request {
-  cookies: { accessToken?: string }; // Define cookies structure
+interface RefreshRequest extends Request {
+  cookies: { refreshToken?: string }; // Define cookies structure
 }
 
-const generateToken = (user: { id: number; email: string; name: string }) => {
-  return jwt.sign(
-    { id: user.id, email: user.email, name: user.name },
-    JWT_SECRET,
-    { expiresIn: ACCESS_TOKEN_EXPIRY }
-  );
-};
-
-// register user
-export const authSignup = async (
+// Sign Up
+export const signup = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { name, email, password } = req.body;
   try {
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      throw new AppError("A user already exists with this email.", 409);
-    }
+    const { name, email, password } = req.body;
+    const existing = await User.findOne({ where: { email } });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-    });
+    if (existing) throw new AppError("Email already in use", 409);
 
-    const accessToken = generateToken(newUser);
+    const hashed = await bcrypt.hash(password, 10);
+    const user = await User.create({ name, email, password: hashed });
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      maxAge: 15 * 60 * 1000, // 15 min
-    });
+    const accessToken = generateAccessToken(user.id, user.email);
+    const refreshToken = generateRefreshToken(user.id, user.email);
 
     res
+      .cookie("accessToken", accessToken, {
+        ...COOKIE_OPTIONS,
+        maxAge: 15 * 60 * 1000,
+      })
+      .cookie("refreshToken", refreshToken, {
+        ...COOKIE_OPTIONS,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
       .status(201)
-      .json({ id: newUser.id, email: newUser.email, name: newUser.name });
-  } catch (error) {
-    next(error);
+      .json({ id: user.id, name, email });
+  } catch (err) {
+    next(err);
   }
 };
 
-// login user
-export const authLogin = async (
+// Login
+export const login = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { email, password } = req.body;
   try {
+    const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
 
-    if (!user) {
-      throw new AppError("No user exists with this email.", 404);
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new AppError("Invalid credentials", 401);
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const accessToken = generateAccessToken(user.id, user.email);
+    const refreshToken = generateRefreshToken(user.id, user.email);
 
-    if (!isPasswordValid) {
-      throw new AppError("Invalid Password", 401);
-    }
-
-    const accessToken = generateToken(user);
-
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      maxAge: 15 * 60 * 1000, // 15 min
-    });
-
-    res.status(200).json({ id: user.id, email: user.email, name: user.name });
-  } catch (error) {
-    next(error);
+    res
+      .cookie("accessToken", accessToken, {
+        ...COOKIE_OPTIONS,
+        maxAge: 15 * 60 * 1000,
+      })
+      .cookie("refreshToken", refreshToken, {
+        ...COOKIE_OPTIONS,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .json({ id: user.id, name: user.name, email: user.email });
+  } catch (err) {
+    next(err);
   }
 };
 
-// validate user session
-export const validateCookie = async (
-  req: AuthRequest,
+// Refresh Token
+export const refreshToken = async (
+  req: RefreshRequest,
   res: Response,
   next: NextFunction
-): Promise<any> => {
+): Promise<void> => {
   try {
-    const token = req.cookies?.accessToken;
-
+    const token = req.cookies.refreshToken;
     if (!token) {
-      return res.status(200).json(null);
+      res.status(403).json({ message: "No refresh token" });
+      return;
     }
 
-    jwt.verify(token, JWT_SECRET as string, (err, decoded) => {
-      if (err) {
-        throw new AppError("Invalid token", 403);
-      }
+    const payload = verifyRefreshToken(token);
+    if (!payload) throw new AppError("Invalid refresh token", 403);
 
-      const user = decoded as JwtPayload;
-      res.json({ id: user.id, email: user.email, name: user.name });
+    const newAccessToken = generateAccessToken(payload.userId, payload.email);
+    res.cookie("accessToken", newAccessToken, {
+      ...COOKIE_OPTIONS,
+      maxAge: 15 * 60 * 1000,
     });
-  } catch (error) {
-    next(error);
+    res.sendStatus(200);
+  } catch (err) {
+    next(err);
   }
 };
 
-// logout user
-export const authLogout = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    res.clearCookie("accessToken", {
-      httpOnly: true,
-      sameSite: "strict",
-    });
+// Validate
+export const validate = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  const user = await User.findOne({
+    where: { id: req.user!.userId },
+    attributes: ["id", "name", "email"], // select only required fields
+  });
 
-    res.status(200).json({ message: "Logout successful" });
-  } catch (error) {
-    next(error);
+  if (!user) {
+    throw new AppError("User not found while validating", 401);
   }
+  res.status(200).json(user);
+};
+
+// Logout
+export const logout = async (_: Request, res: Response): Promise<void> => {
+  res
+    .clearCookie("accessToken", COOKIE_OPTIONS)
+    .clearCookie("refreshToken", COOKIE_OPTIONS)
+    .sendStatus(200);
 };

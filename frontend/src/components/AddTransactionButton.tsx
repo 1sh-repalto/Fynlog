@@ -1,20 +1,20 @@
-import React, { useState } from "react";
-import { Plus, ChevronDown } from "lucide-react";
-import { AddTransactionModal } from "./AddTransactionModal";
-import { incomeCategories, expenseCategories } from "../data/defautCategories";
-import { useAuthStore } from "../store/useAuth";
-import { useTransactionStore } from "../store/transactionStore";
-import { toast } from "react-toastify";
+import React, { useState } from 'react';
+import { Plus, ChevronDown } from 'lucide-react';
+import { AddTransactionModal } from './AddTransactionModal';
+import { incomeCategories, expenseCategories } from '../data/defaultCategories';
+import { useAuthStore } from '../store/useAuth';
+import { useTransactionStore } from '../store/useTransactionStore';
+import { toast } from 'react-toastify';
 
 export default function AddTransactionButton() {
   const [isOpen, setIsOpen] = useState(false);
-  const [amount, setAmount] = useState("");
-  const [desc, setDesc] = useState("");
+  const [amount, setAmount] = useState('');
+  const [desc, setDesc] = useState('');
 
-  const [type, setType] = useState("");
-  const [category, setCategory] = useState("");
+  const [type, setType] = useState('');
+  const [category, setCategory] = useState('');
 
-  const categories = type === "income" ? incomeCategories : expenseCategories;
+  const categories = type === 'income' ? incomeCategories : expenseCategories;
 
   const { user } = useAuthStore();
   const addTransaction = useTransactionStore((state) => state.addTransaction);
@@ -25,7 +25,7 @@ export default function AddTransactionButton() {
     const selectedCategory = categories.find((cat) => cat.name === category);
 
     if (!selectedCategory || !user) {
-      console.error("Invalid category or user not found");
+      console.error('Invalid category or user not found');
       return;
     }
 
@@ -33,21 +33,21 @@ export default function AddTransactionButton() {
       userId: user.id,
       categoryId: selectedCategory.id,
       amount: parseFloat(amount),
-      type: (type as "income") || "expense",
-      date: new Date(),
+      type: (type as 'income') || 'expense',
+      date: new Date().toISOString(),
       description: desc.trim() || undefined,
     };
 
     try {
       await addTransaction(transactionData);
 
-      setAmount("");
-      setDesc("");
-      setCategory("");
-      setType("");
+      setAmount('');
+      setDesc('');
+      setCategory('');
+      setType('');
       setIsOpen(false);
-    } catch (err) {
-      toast.error("Error while fetching data.");
+    } catch {
+      toast.error('Error while fetching data.');
     }
   };
 
@@ -71,14 +71,8 @@ export default function AddTransactionButton() {
 
       <AddTransactionModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <h2 className="text-3xl font-semibold ml-4">Add Transaction</h2>
-        <form
-          onSubmit={handleSubmit}
-          className="py-8 px-16 flex-col h-5/6 space-y-2"
-        >
-          <label
-            htmlFor="amount"
-            className="pl-2 font-semibold block w-4/5 mx-auto"
-          >
+        <form onSubmit={handleSubmit} className="py-8 px-16 flex-col h-5/6 space-y-2">
+          <label htmlFor="amount" className="pl-2 font-semibold block w-4/5 mx-auto">
             Amount
           </label>
           <input
@@ -91,10 +85,7 @@ export default function AddTransactionButton() {
             className="block bg-lighterDark rounded-md mx-auto mt-2 mb-6 w-7/8 px-4 p-2 outline-none border border-transparent focus:border-neutral"
           />
 
-          <label
-            htmlFor="type"
-            className="pl-2 font-semibold block w-4/5 mx-auto"
-          >
+          <label htmlFor="type" className="pl-2 font-semibold block w-4/5 mx-auto">
             Type
           </label>
           <div className="relative w-7/8 mx-auto mb-6">
@@ -102,11 +93,11 @@ export default function AddTransactionButton() {
               required
               value={type}
               className={`block appearance-none bg-lighterDark w-full rounded-md px-4 p-2 focus:border-neutral ${
-                type === "" ? "text-neutral-400" : "text-white"
+                type === '' ? 'text-neutral-400' : 'text-white'
               }`}
               onChange={(e) => {
                 setType(e.target.value);
-                setCategory("");
+                setCategory('');
               }}
             >
               <option value="" disabled hidden>
@@ -122,10 +113,7 @@ export default function AddTransactionButton() {
             />
           </div>
 
-          <label
-            htmlFor="category"
-            className="pl-2 font-semibold block w-4/5 mx-auto"
-          >
+          <label htmlFor="category" className="pl-2 font-semibold block w-4/5 mx-auto">
             Category
           </label>
           <div className="relative w-7/8 mx-auto mb-6">
@@ -133,7 +121,7 @@ export default function AddTransactionButton() {
               required
               value={category}
               className={`block appearance-none bg-lighterDark w-full h-10 rounded-md pl-4 pr-10 ${
-                category === "" ? "text-neutral-400" : "text-neutral"
+                category === '' ? 'text-neutral-400' : 'text-neutral'
               }`}
               onChange={(e) => {
                 setCategory(e.target.value);
@@ -153,22 +141,18 @@ export default function AddTransactionButton() {
             <ChevronDown
               size={20}
               className={`pointer-events-none absolute right-3 -translate-y-1/2 cursor-pointer ${
-                type ? "top-1/2 text-neutral" : "top-1/4 text-neutral-400"
+                type ? 'top-1/2 text-neutral' : 'top-1/4 text-neutral-400'
               }`}
             />
 
             {!type && (
               <p className="italic text-xs text-warning mt-2">
-                Please select the transaction type first to enable category
-                selection.
+                Please select the transaction type first to enable category selection.
               </p>
             )}
           </div>
 
-          <label
-            htmlFor="description"
-            className="pl-2 font-semibold block w-4/5 mx-auto"
-          >
+          <label htmlFor="description" className="pl-2 font-semibold block w-4/5 mx-auto">
             Description
           </label>
           <textarea

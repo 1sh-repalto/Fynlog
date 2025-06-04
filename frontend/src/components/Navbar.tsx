@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { useAuthStore } from "../store/useAuth";
-import { Menu, X } from "lucide-react";
-import DropDownMenu from "./DropDownMenu";
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../store/useAuth';
+import { Menu, X } from 'lucide-react';
+import DropDownMenu from './DropDownMenu';
 
 const Navbar: React.FC = () => {
   const location = useLocation();
-  const { signOut } = useAuthStore();
+  const { logoutUser } = useAuthStore();
   const [dropdownMenu, setDropdownMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -17,8 +17,8 @@ const Navbar: React.FC = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
         <Link
           to="/home"
           className={`hover:bg-lighterDark h-10 w-auto px-2 rounded-sm flex justify-center items-center transition duration-200 ease-in-out ${
-            location.pathname === "/home" && "bg-lighterDark"
+            location.pathname === '/home' && 'bg-lighterDark'
           }`}
         >
           Dashboard
@@ -38,7 +38,7 @@ const Navbar: React.FC = () => {
         <Link
           to="/transactions"
           className={`hover:bg-lighterDark h-10 w-auto px-2 rounded-sm flex justify-center items-center transition duration-200 ease-in-out ${
-            location.pathname === "/transactions" && "bg-lighterDark"
+            location.pathname === '/transactions' && 'bg-lighterDark'
           }`}
         >
           Transactions
@@ -46,26 +46,25 @@ const Navbar: React.FC = () => {
         <Link
           to="/page3"
           className={`hover:bg-lighterDark h-10 w-auto px-2 rounded-sm flex justify-center items-center transition duration-200 ease-in-out ${
-            location.pathname === "/page3" && "bg-lighterDark"
+            location.pathname === '/page3' && 'bg-lighterDark'
           }`}
         >
           Page3
         </Link>
       </div>
-      <div
-        ref={menuRef}
-        className="w-3/10 flex justify-end items-center relative"
-      >
+      <div ref={menuRef} className="w-3/10 flex justify-end items-center relative">
         <button
           aria-label="Toggle dropdown menu"
           className={`h-12 w-12 flex justify-center items-center rounded-sm transition duration-200 ease-in-out hover:opacity-70 hover:bg-lighterDark ${
-            dropdownMenu && "bg-lighterDark"
+            dropdownMenu && 'bg-lighterDark'
           }`}
           onClick={() => setDropdownMenu((prev) => !prev)}
         >
           {dropdownMenu ? <X /> : <Menu />}
         </button>
-        {dropdownMenu && <DropDownMenu signOut={signOut} closeMenu={() => setDropdownMenu(false)} />}
+        {dropdownMenu && (
+          <DropDownMenu signOut={logoutUser} closeMenu={() => setDropdownMenu(false)} />
+        )}
       </div>
     </nav>
   );

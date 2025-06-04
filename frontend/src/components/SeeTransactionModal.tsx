@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import { Transaction } from "../store/transactionStore";
-import { incomeCategories, expenseCategories } from "../data/defautCategories";
-import { X } from "lucide-react";
+import React, { useEffect } from 'react';
+import { Transaction } from '../types';
+import { incomeCategories, expenseCategories } from '../data/defaultCategories';
+import { X } from 'lucide-react';
 
 interface SeeTransactionModalProps {
   isOpen: boolean;
@@ -16,16 +16,16 @@ const SeeTransactionModal: React.FC<SeeTransactionModalProps> = ({
 }) => {
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     }
 
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     };
   }, [isOpen]);
-  
+
   if (!isOpen || !transaction) return null;
 
   const { type, amount, date, description, categoryId } = transaction;
@@ -50,54 +50,50 @@ const SeeTransactionModal: React.FC<SeeTransactionModalProps> = ({
         <h2 className="text-3xl font-bold pl-4 h-1/10">Transaction Details</h2>
         <div className="text-neutral pl-4 h-9/10 mt-10 text-xl flex flex-col justify-evenly">
           <div className="flex items-center">
-            <p className="text-2xl font-semibold w-1/2">Type</p>
+            <p className="text-2xl font-semibold w-1/2 text-neutral-500">Type</p>
             <p
-              className={`font-semibold ${
-                type === "income" ? "text-secondary" : "text-rose-700"
-              }`}
+              className={`font-semibold ${type === 'income' ? 'text-secondary' : 'text-rose-700'}`}
             >
-              {type === "income" ? "Income" : "Expense"}
+              {type === 'income' ? 'Income' : 'Expense'}
             </p>
           </div>
           <hr className="my-4 border-t border-neutral-700" />
           <div className="flex items-center">
-            <p className="text-2xl font-semibold w-1/2">Category</p>
-            <p className="font-semibold">
-              {category?.name || `ID: ${categoryId}`}
-            </p>
+            <p className="text-2xl font-semibold w-1/2 text-neutral-500">Category</p>
+            <p className="font-semibold">{category?.name || `ID: ${categoryId}`}</p>
           </div>
           <hr className="my-4 border-t border-neutral-700" />
           <div className="flex items-center">
-            <p className="text-2xl font-semibold w-1/2">Amount</p>
+            <p className="text-2xl font-semibold w-1/2 text-neutral-500">Amount</p>
             <p className="font-semibold">₹ {Number(amount).toFixed(2)}</p>
           </div>
           <hr className="my-4 border-t border-neutral-700" />
           <div className="flex items-center">
-            <p className="text-2xl font-semibold w-1/2">Date</p>{" "}
+            <p className="text-2xl font-semibold w-1/2 text-neutral-500">Date</p>{' '}
             <p className="font-semibold">
-              {new Date(date).toLocaleDateString("en-IN", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}{" "}
+              {new Date(date).toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}{' '}
             </p>
           </div>
           <hr className="my-4 border-t border-neutral-700" />
           <div className="flex items-center">
-            <p className="text-2xl font-semibold w-1/2">Time</p>
+            <p className="text-2xl font-semibold w-1/2 text-neutral-500">Time</p>
             <p className="font-semibold">
-              {new Date(date).toLocaleTimeString("en-IN", {
-                hour: "2-digit",
-                minute: "2-digit",
+              {new Date(date).toLocaleTimeString('en-IN', {
+                hour: '2-digit',
+                minute: '2-digit',
                 hour12: true,
               })}
             </p>
           </div>
           <hr className="my-4 border-t border-neutral-700" />
           <div className="flex">
-            <p className="text-2xl font-semibold w-1/2">Description</p>
+            <p className="text-2xl font-semibold w-1/2 text-neutral-500">Description</p>
             <div className="h-20 w-1/2 border border-neutral-400 overflow-y-auto p-2 rounded-md bg-muted text-sm text-neutral-700 dark:text-neutral-300 break-words">
-              {description || "No description"}
+              {description || 'No description'}
             </div>
           </div>
         </div>
