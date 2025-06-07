@@ -10,7 +10,7 @@ const DashboardBreakdownCharts = () => {
   const expenseChartData = getChartDataByType(transactions, expenseCategories, 'expense');
 
   return (
-    <div className="w-full h-auto md:flex gap-2 space-y-2">
+    <div className="w-full h-auto md:flex gap-4 space-y-2">
       <div className="md:w-1/2 w-full h-140 p-3 bg-lighterDark rounded-md mt-2 md:mt-0">
         <h1 className="text-xl text-neutral-500 font-semibold ml-2">Income Breakdown</h1>
         <BreakdownChart {...incomeChartData} />

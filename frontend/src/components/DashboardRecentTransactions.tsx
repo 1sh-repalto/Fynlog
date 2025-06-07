@@ -10,7 +10,7 @@ import { getCategoryById } from '../utils/getCategoryById';
 const DashboardRecentTransactions = () => {
   const transactions = useTransactionStore((state) => state.transactions);
   const loading = useTransactionStore((state) => state.loading);
-  const fetchTransactions = useTransactionStore((state) => state.fetchTransactions);
+  const fetchByMonth = useTransactionStore((state) => state.fetchByMonth);
   const selectedMonth = useTransactionStore((state) => state.selectedMonth);
 
   const recent3transactions = [...transactions]
@@ -31,12 +31,11 @@ const DashboardRecentTransactions = () => {
   };
 
   useEffect(() => {
-    fetchTransactions(selectedMonth);
-  }, [fetchTransactions, selectedMonth]);
+    fetchByMonth(selectedMonth);
+  }, [fetchByMonth, selectedMonth]);
 
   return (
-    <div className="w-full h-109 p-3 bg-lighterDark rounded-md mb-4">
-      <h1 className="text-2xl text-neutral-500 font-semibold ml-2">Recent Transactions</h1>
+    <>
       <ul className="mt-4 space-y-3 px-2">
         {loading ? (
           <div className="flex justify-center items-center mt-40">
@@ -52,10 +51,10 @@ const DashboardRecentTransactions = () => {
 
             return (
               <TransactionListItem
+                key={txn.id}
                 transaction={txn}
                 category={category}
                 onClick={() => openModal(txn)}
-                page="dashboard"
               />
             );
           })
@@ -69,14 +68,14 @@ const DashboardRecentTransactions = () => {
       {!loading && recent3transactions.length !== 0 && (
         <div className="flex justify-center">
           <Link to={'/transactions'}>
-            <button className="bg-lightDark hover:bg-dark active:bg-lightDark h-auto mt-3 py-2 px-15 rounded-md font-semibold text-lg cursor-pointer flex items-center gap-2 transition-transform duration-200 transform hover:scale-105">
+            <button className="bg-lighterDark hover:bg-neutral-700 active:bg-lighterDark h-auto mt-3 py-2 px-15 rounded-md font-semibold text-lg cursor-pointer flex items-center gap-2 transition-transform duration-200 transform hover:scale-105">
               See all
               <ArrowRight size={22} />
             </button>
           </Link>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

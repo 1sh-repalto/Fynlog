@@ -4,10 +4,9 @@ interface Props {
   transaction: Transaction;
   category: Category | undefined;
   onClick?: () => void;
-  page: string;
 }
 
-const TransactionListItem = ({ transaction, category, onClick, page }: Props) => {
+const TransactionListItem = ({ transaction, category, onClick }: Props) => {
   const amount = Number(transaction.amount);
   const date = new Date(transaction.date);
 
@@ -15,7 +14,7 @@ const TransactionListItem = ({ transaction, category, onClick, page }: Props) =>
     <li
       key={transaction.id}
       onClick={onClick}
-      className={`h-24 px-8 flex justify-between items-center ${page === 'dashboard' ? 'bg-lightDark' : 'bg-lighterDark'} p-3 rounded-md hover:scale-102 cursor-pointer transition-transform duration-200 transform`}
+      className={`h-24 px-8 flex justify-between items-center bg-lighterDark  p-3 rounded-md hover:scale-102 cursor-pointer transition-transform duration-200 transform`}
     >
       <div className="h-full flex flex-col justify-center">
         <p className="text-neutral font-semibold text-xl">{category?.name || 'No Category'}</p>

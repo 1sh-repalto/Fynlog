@@ -4,61 +4,8 @@ import Transaction from "../models/transaction";
 import { Op } from "sequelize";
 
 interface AuthenticatedRequest extends Request {
-  user?: { id: number; email: string; iat: number; exp: number };
+  user?: { userId: number; email: string; iat: number; exp: number };
 }
-
-export const getTransactions = async (
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    if (!req.user) {
-      throw new AppError("Unauthorized", 401);
-    }
-
-    const { period, limit = "10", offset = "0" } = req.query;
-    const userId = req.user.id;
-
-    const parsedLimit = parseInt(limit as string);
-    const parsedOffset = parseInt(offset as string); // ✅ Fixed here
-
-    let startDate;
-    const now = new Date();
-
-    if (period == "weekly") {
-      startDate = new Date(now);
-      startDate.setDate(now.getDate() - now.getDay());
-    } else if (period === "monthly") {
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    } else if (period === "yearly") {
-      startDate = new Date(now.getFullYear(), 0, 1);
-    }
-
-    const where: any = { userId };
-    if (startDate) {
-      where.date = {
-        [Op.gte]: startDate,
-        [Op.lte]: now,
-      };
-    }
-
-    const { rows: transactions, count } = await Transaction.findAndCountAll({
-      where,
-      order: [["date", "DESC"]],
-      limit: parsedLimit,
-      offset: parsedOffset,
-    });
-
-    res.status(200).json({
-      transactions,
-      total: count,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 
 export const createTransaction = async (
   req: AuthenticatedRequest,
@@ -70,7 +17,7 @@ export const createTransaction = async (
       throw new AppError("Unauthorized", 401);
     }
 
-    const userId = req.user.id;
+    const userId = req.user.userId;
     let { categoryId, amount, type, description } = req.body;
 
     const transaction = await Transaction.create({
@@ -82,9 +29,96 @@ export const createTransaction = async (
       description,
     });
 
-    res
-      .status(201)
-      .json({ message: "Transaction created successfully", transaction });
+    res.status(201).json({ transaction });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllTransactions = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.user) {
+      throw new AppError("Unauthorized", 401);
+    }
+
+    const userId = req.user.userId;
+    const transactions = await Transaction.findAll({
+      where: { userId },
+      order: ["date", "DESC"],
+    });
+
+    res.status(200).json({ transactions });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMonthlyTransactions = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.user) {
+      throw new AppError("Unauthorized", 401);
+    }
+    
+    const userId = req.user.userId;
+    const { month } = req.query;
+
+    if(!month || typeof month !== "string") {
+      throw new AppError("Month parameter is required in YYYY-MM format", 400);
+    }
+
+    const [year, mon] = month.split("-").map(Number);
+    const startDate = new Date(year, mon-1, 1);
+    const endDate = new Date(year, mon, 0, 23, 59, 59);
+
+    const transactions = await Transaction.findAll({
+      where: {
+        userId,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+      order: [["date", "DESC"]],
+    });
+
+    res.status(200).json({ transactions });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const getPaginatedTransactions = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.user) {
+      throw new AppError("Unauthorized", 401);
+    }
+
+    const userId = req.user.userId;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const offset = parseInt(req.query.offset as string) || 0;
+
+    const { rows: transactions, count } = await Transaction.findAndCountAll({
+      where: { userId },
+      order: [["date", "DESC"]],
+      limit,
+      offset,
+    });
+
+    res.status(200).json({
+      transactions,
+      total: count,
+    });
   } catch (error) {
     next(error);
   }

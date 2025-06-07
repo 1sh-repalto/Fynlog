@@ -26,22 +26,22 @@ const DashboardCards = () => {
     : 0;
 
   const balance = income - expense;
-
+    
   return (
-    <div className="w-full flex justify-evenly gap-4 mb-4">
+    <div className="w-full flex justify-evenly gap-4 my-4">
       <div className="w-full h-35 p-3 bg-lighterDark rounded-md flex items-center justify-evenly">
         <Wallet size={50} className="text-yellow-300" />
         <div className="w-[60%] flex flex-col items-start">
           <h1 className="text-xl text-neutral-500 font-semibold">Balance</h1>
           <p
-            className={`text-4xl font-semibold mt-1 tracking-wider ${
+            className={`text-3xl font-semibold mt-1 tracking-wider ${
               balance > 0 ? 'text-secondary' : balance < 0 ? 'text-rose-700' : 'text-neutral'
             }`}
           >
             {balance > 0 ? (
-              <>&#43; &#8377; {balance.toFixed(2)}</>
+              <>&#8377; {balance.toFixed(2)}</>
             ) : balance < 0 ? (
-              <>&#8722; &#8377; {Math.abs(balance).toFixed(2)}</>
+              <> &#8377; {Math.abs(balance).toFixed(2)}</>
             ) : (
               <>&#8377; 0.00</>
             )}
@@ -54,7 +54,7 @@ const DashboardCards = () => {
         <div className="w-[60%] flex flex-col items-start">
           <p className="text-xl text-neutral-500 font-semibold">Income</p>
           <p
-            className={`text-4xl font-semibold mt-1 tracking-wider ${
+            className={`text-3xl font-semibold mt-1 tracking-wider ${
               income === 0 ? 'text-neutral' : 'text-secondary'
             }`}
           >
@@ -68,7 +68,7 @@ const DashboardCards = () => {
         <div className="w-[60%] flex flex-col items-start">
           <h1 className="text-xl text-neutral-500 font-semibold">Expense</h1>
           <p
-            className={`text-4xl font-semibold mt-1 tracking-wider ${
+            className={`text-3xl font-semibold mt-1 tracking-wider ${
               expense === 0 ? 'text-neutral' : 'text-rose-700'
             }`}
           >

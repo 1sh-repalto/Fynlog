@@ -31,19 +31,19 @@ const BreakdownChart = ({ labels, data, colors }: BreakdownChartProps) => {
             plugins: {
               legend: {
                 display: false,
-              },
+              }
             },
           }}
         />
       </div>
-      <div className="flex flex-wrap justify-center gap-4 mt-4 text-sm text-gray-300">
+      {/* <div className="flex flex-wrap justify-center gap-4 mt-4 text-sm text-gray-300">
         {labels.map((label, index) => (
           <div key={index} className="flex items-center gap-2">
             <span className="w-4 h-4 rounded" style={{ backgroundColor: colors[index] }} />
             <span>{label}</span>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

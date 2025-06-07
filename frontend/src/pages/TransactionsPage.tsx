@@ -10,8 +10,8 @@ import { getCategoryById } from '../utils/getCategoryById';
 const TransactionsPage = () => {
   const {
     paginatedTransactions,
-    fetchInitialPaginatedTransactions,
-    fetchMorePaginatedTransactions,
+    fetchInitialPaginated,
+    fetchMorePaginated,
     hasMore,
     loading,
   } = useTransactionStore();
@@ -30,7 +30,7 @@ const TransactionsPage = () => {
   };
 
   useEffect(() => {
-    fetchInitialPaginatedTransactions();
+    fetchInitialPaginated();
   }, []);
 
   return (
@@ -45,6 +45,7 @@ const TransactionsPage = () => {
               const category = getCategoryById(txn.categoryId);
               return (
                 <TransactionListItem
+                key={txn.id}
                   transaction={txn}
                   category={category}
                   onClick={() => openModal(txn)}
@@ -63,7 +64,7 @@ const TransactionsPage = () => {
           <div className="flex justify-center text-center my-6">
             <button
               className="bg-lighterDark hover:bg-lighterDark active:bg-lightDark h-auto mt-3 py-2 px-15 rounded-md font-semibold text-lg cursor-pointer flex items-center gap-2 transition-transform duration-200 transform hover:scale-105"
-              onClick={fetchMorePaginatedTransactions}
+              onClick={fetchMorePaginated}
             >
               Load More
               <ArrowDown size={22} />
