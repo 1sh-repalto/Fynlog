@@ -1,4 +1,5 @@
 import { Transaction, Category } from '../types';
+import Twemoji from 'react-twemoji';
 
 interface Props {
   transaction: Transaction;
@@ -16,17 +17,22 @@ const TransactionListItem = ({ transaction, category, onClick }: Props) => {
       onClick={onClick}
       className={`h-24 px-8 flex justify-between items-center bg-lighterDark  p-3 rounded-md hover:scale-102 cursor-pointer transition-transform duration-200 transform`}
     >
-      <div className="h-full flex flex-col justify-center">
-        <p className="text-neutral font-semibold text-xl">{category?.name || 'No Category'}</p>
-        <p className="text-lg text-neutral-500 font-semibold">
-          {isNaN(date.getTime())
-            ? 'Invalid date'
-            : date.toLocaleDateString('en-IN', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-              })}
-        </p>
+      <div className="h-full flex items-center justify-center gap-6">
+        <Twemoji options={{ className: '' }}>
+          <span className="w-10 h-10 inline-block">{category?.emoji}</span>
+        </Twemoji>
+        <div className="flex flex-col justify-center">
+          <p className="text-neutral font-semibold text-xl">{category?.name || 'No Category'}</p>
+          <p className="text-lg text-neutral-500 font-semibold">
+            {isNaN(date.getTime())
+              ? 'Invalid date'
+              : date.toLocaleDateString('en-IN', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })}
+          </p>
+        </div>
       </div>
       <div
         className={`text-2xl font-semibold ${

@@ -6,15 +6,11 @@ import { useTransactionStore } from '../store/useTransactionStore';
 import SeeTransactionModal from '../components/SeeTransactionModal';
 import TransactionListItem from '../components/TransactionListItem';
 import { getCategoryById } from '../utils/getCategoryById';
+import Twemoji from 'react-twemoji';
 
 const TransactionsPage = () => {
-  const {
-    paginatedTransactions,
-    fetchInitialPaginated,
-    fetchMorePaginated,
-    hasMore,
-    loading,
-  } = useTransactionStore();
+  const { paginatedTransactions, fetchInitialPaginated, fetchMorePaginated, hasMore, loading } =
+    useTransactionStore();
 
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,7 +33,12 @@ const TransactionsPage = () => {
     <>
       <Navbar />
       <main className="pt-7 px-12">
-        <h2 className="text-neutral text-5xl font-bold mt-10">Your Transactions</h2>
+        <div className='flex gap-4 items-center mt-10'>
+          <h1 className="text-neutral text-5xl font-bold">Your Transactions</h1>
+          <Twemoji options={{ className: '' }}>
+            <span className="w-12 h-12 inline-block">📋</span>
+          </Twemoji>
+        </div>
 
         <div className="bg-lightDark p-5 mt-10 rounded-md">
           <ul className="space-y-5">
@@ -45,7 +46,7 @@ const TransactionsPage = () => {
               const category = getCategoryById(txn.categoryId);
               return (
                 <TransactionListItem
-                key={txn.id}
+                  key={txn.id}
                   transaction={txn}
                   category={category}
                   onClick={() => openModal(txn)}

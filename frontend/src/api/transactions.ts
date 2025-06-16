@@ -1,7 +1,7 @@
 import api from './axios';
 import { Transaction, NewTransaction } from '../types';
 
-export const createTransaction = async (transaction: NewTransaction): Promise<Transaction> => {
+export const createTransaction = async (transaction: NewTransaction): Promise<Transaction> => {  
   const res = await api.post<{ transaction: Transaction }>('/transactions', transaction);
   return res.data.transaction;
 };

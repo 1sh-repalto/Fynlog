@@ -47,7 +47,7 @@ export const signup = async (
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .status(201)
-      .json({ id: user.id, name, email });
+      .json({ id: user.id, name, email, createdAt: user.createdAt });
   } catch (err) {
     next(err);
   }
@@ -79,7 +79,7 @@ export const login = async (
         ...COOKIE_OPTIONS,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
-      .json({ id: user.id, name: user.name, email: user.email });
+      .json({ id: user.id, name: user.name, email: user.email, createdAt: user.createdAt });
   } catch (err) {
     next(err);
   }
@@ -119,7 +119,7 @@ export const validate = async (
 ): Promise<void> => {
   const user = await User.findOne({
     where: { id: req.user!.userId },
-    attributes: ["id", "name", "email"], // select only required fields
+    attributes: ["id", "name", "email", "createdAt"], // select only required fields
   });
 
   if (!user) {
@@ -135,3 +135,14 @@ export const logout = async (_: Request, res: Response): Promise<void> => {
     .clearCookie("refreshToken", COOKIE_OPTIONS)
     .sendStatus(200);
 };
+
+export const sessionStatus = async (
+  req: RefreshRequest,
+  res: Response
+): Promise<any> => {
+  if (req.cookies?.refreshToken) {
+    return res.json({ hasSession: true });
+  }
+  res.json({ hasSession: false });
+};
+

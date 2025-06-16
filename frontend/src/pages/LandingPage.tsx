@@ -8,8 +8,8 @@ const LandingPage = () => {
       <div className="max-w-5xl mx-auto text-center mt-44 px-4">
         <h1 className="text-4xl md:text-6xl font-semibold text-neutral">
           Take{' '}
-          <span className="font-light text-warning drop-shadow-[0px_0px_20px_rgba(230,126,34,0.8)]">
-            control
+          <span className="font-light text-warning drop-shadow-[0px_0px_25px_rgba(230,126,34,1)]">
+            Control
           </span>{' '}
           of Your Finances
         </h1>

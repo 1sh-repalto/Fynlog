@@ -11,20 +11,32 @@ import {
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip);
 
 interface MonthlySpendingBarChartProps {
-  labels: string[]; // e.g. ['Feb', 'Mar', 'Apr', 'May', 'Jun']
-  data: number[];   // e.g. [1200, 800, 950, 1020, 780]
+  labels: string[];
+  expenses: number[];
+  income: number[];
 }
 
-const MonthlySpendingBarChart = ({ labels, data }: MonthlySpendingBarChartProps) => {
+const MonthlySpendingBarChart = ({ labels, expenses, income }: MonthlySpendingBarChartProps) => {
   const chartData = {
     labels,
     datasets: [
       {
-        label: 'Monthly Spending',
-        data,
-        backgroundColor: '#10B981', // emerald-500
+        label: 'Income',
+        data: income,
+        backgroundColor: '#10B981',           // emerald-500
+        hoverBackgroundColor: '#34D399',      // emerald-400
         borderRadius: 6,
-        barPercentage: 0.6,
+        barPercentage: 0.8,
+        categoryPercentage: 0.7,
+      },
+      {
+        label: 'Expenses',
+        data: expenses,
+        backgroundColor: '#bc544b',
+        hoverBackgroundColor: '#e07267',
+        borderRadius: 6,
+        barPercentage: 0.8,
+        categoryPercentage: 0.7,
       },
     ],
   };
@@ -34,6 +46,9 @@ const MonthlySpendingBarChart = ({ labels, data }: MonthlySpendingBarChartProps)
     maintainAspectRatio: false,
     plugins: {
       tooltip: {
+        backgroundColor: '#1F2937',
+        titleColor: '#F3F4F6',
+        bodyColor: '#E5E7EB',
         callbacks: {
           label: (ctx: any) => `₹ ${ctx.raw}`,
         },
@@ -46,22 +61,28 @@ const MonthlySpendingBarChart = ({ labels, data }: MonthlySpendingBarChartProps)
       y: {
         beginAtZero: true,
         ticks: {
-          callback: (tickValue: string | number) => `₹${tickValue}`,
+          color: '#D1D5DB',
+          font: { size: 12 },
+          callback: (value: number | string) => `₹${value}`,
         },
         grid: {
-          color: '#3a3a3a',
+          color: 'rgba(255, 255, 255, 0.05)',
         },
       },
       x: {
+        ticks: {
+          color: '#D1D5DB',
+          font: { size: 12 },
+        },
         grid: {
-          display: false,
+          color: 'rgba(255, 255, 255, 0.05)',
         },
       },
     },
   };
 
   return (
-    <div className="w-full h-72 p-4">
+    <div className="w-full h-72 p-4 bg-transparent">
       <Bar data={chartData} options={options} />
     </div>
   );

@@ -25,3 +25,8 @@ export const validateSession = async (): Promise<User> => {
   const res = await api.get<User>('/auth/validate');
   return res.data;
 };
+
+export const checkStatus = async (): Promise<any> => {
+  const res = await api.get('/auth/session-status');
+  return res.data;
+}

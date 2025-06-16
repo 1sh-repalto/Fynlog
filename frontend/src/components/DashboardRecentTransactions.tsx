@@ -2,16 +2,15 @@ import { Link } from 'react-router-dom';
 import { Transaction } from '../types';
 import { useTransactionStore } from '../store/useTransactionStore';
 import { ArrowRight, Loader2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import SeeTransactionModal from './SeeTransactionModal';
 import TransactionListItem from './TransactionListItem';
 import { getCategoryById } from '../utils/getCategoryById';
+import Twemoji from 'react-twemoji';
 
 const DashboardRecentTransactions = () => {
   const transactions = useTransactionStore((state) => state.transactions);
   const loading = useTransactionStore((state) => state.loading);
-  const fetchByMonth = useTransactionStore((state) => state.fetchByMonth);
-  const selectedMonth = useTransactionStore((state) => state.selectedMonth);
 
   const recent3transactions = [...transactions]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -30,41 +29,49 @@ const DashboardRecentTransactions = () => {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    fetchByMonth(selectedMonth);
-  }, [fetchByMonth, selectedMonth]);
-
   return (
-    <>
-      <ul className="mt-4 space-y-3 px-2">
-        {loading ? (
-          <div className="flex justify-center items-center mt-40">
-            <Loader2 className="animate-spin text-neutral-400" size={50} />
-          </div>
-        ) : recent3transactions.length === 0 ? (
-          <p className="text-neutral-400 italic text-center font-semibold text-3xl mt-40">
-            No recent transactions
-          </p>
-        ) : (
-          recent3transactions.map((txn) => {
-            const category = getCategoryById(txn.categoryId);
+    <div className="h-auto w-full rounded-lg bg-lightDark mt-12 p-5">
+      <div className="flex gap-3 items-center">
+        <h1 className="text-3xl text-neutral-500 font-semibold ml-2">Recent Transactions</h1>
+        <Twemoji options={{ className: '' }}>
+          <span className="w-10 h-10 inline-block">🧾</span>
+        </Twemoji>
+      </div>
+      {transactions.length === 0 ? (
+        <p className="text-xl font-semibold text-center py-5 text-neutral-600">
+          No data available. Add transactions.
+        </p>
+      ) : (
+        <ul className="mt-4 space-y-3 px-2">
+          {loading ? (
+            <div className="flex justify-center items-center mt-40">
+              <Loader2 className="animate-spin text-neutral-400" size={50} />
+            </div>
+          ) : recent3transactions.length === 0 ? (
+            <p className="text-neutral-400 italic text-center font-semibold text-3xl mt-40">
+              No recent transactions
+            </p>
+          ) : (
+            recent3transactions.map((txn) => {
+              const category = getCategoryById(txn.categoryId);
 
-            return (
-              <TransactionListItem
-                key={txn.id}
-                transaction={txn}
-                category={category}
-                onClick={() => openModal(txn)}
-              />
-            );
-          })
-        )}
-        <SeeTransactionModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          transaction={selectedTransaction}
-        />
-      </ul>
+              return (
+                <TransactionListItem
+                  key={txn.id}
+                  transaction={txn}
+                  category={category}
+                  onClick={() => openModal(txn)}
+                />
+              );
+            })
+          )}
+          <SeeTransactionModal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            transaction={selectedTransaction}
+          />
+        </ul>
+      )}
       {!loading && recent3transactions.length !== 0 && (
         <div className="flex justify-center">
           <Link to={'/transactions'}>
@@ -75,7 +82,7 @@ const DashboardRecentTransactions = () => {
           </Link>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

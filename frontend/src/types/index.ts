@@ -3,6 +3,7 @@ export interface Category {
   name: string;
   color: string;
   type: 'income' | 'expense';
+  emoji: string;
 }
 
 export interface Transaction {
@@ -18,6 +19,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  createdAt: string;
 }
 
 export type NewTransaction = Omit<Transaction, 'id'>;

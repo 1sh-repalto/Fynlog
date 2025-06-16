@@ -21,24 +21,41 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   initializeAuth: async () => {
     try {
-      const user = await validateSession(); // try to see if session still exists
-      saveUser(user);
-      set({ user, isAuthenticated: true });
-    } catch (err: any) {
-      if (err?.response?.status === 401 || err?.response?.status === 403) {
-        try {
-          await api.post('/auth/refresh');
-          const user = await validateSession(); // try again
-          saveUser(user);
-          set({ user, isAuthenticated: true });
-        } catch (refreshErr) {
-          clearUser();
-          set({ user: null, isAuthenticated: false });
-          console.warn('Session expired, user must log in again.');
-        }
-      } else {
-        console.error('Unexpected error during auth initialization', err);
+      const { hasSession } = await api.get('/auth/session-status').then((res) => res.data);
+      if (!hasSession) {
+        // No session at all (no refresh token)
+        clearUser();
+        set({ user: null, isAuthenticated: false });
+        return;
       }
+
+      try {
+        const user = await validateSession();
+        saveUser(user);
+        set({ user, isAuthenticated: true });
+      } catch (err: any) {
+        if (err?.response?.status === 401 || err?.response?.status === 403) {
+          try {
+            await api.post('/auth/refresh');
+            const user = await validateSession();
+            saveUser(user);
+            set({ user, isAuthenticated: true });
+          } catch (refreshErr) {
+            // Refresh also failed
+            clearUser();
+            set({ user: null, isAuthenticated: false });
+            console.warn('Session expired. Please log in again.');
+          }
+        } else {
+          // Unexpected error during validateSession
+          console.error('Unexpected error during session validation:', err);
+        }
+      }
+    } catch (outerErr) {
+      // session-status check itself failed
+      console.error('Failed to check session status:', outerErr);
+      clearUser();
+      set({ user: null, isAuthenticated: false });
     } finally {
       set({ loading: false });
     }

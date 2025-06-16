@@ -14,7 +14,7 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<HomePage />} />
-          <Route path="/transactions" element={<TransactionsPage />} />
+          <Route path="/transactions" element={<TransactionsPage />} />    
         </Route>
 
         <Route path="/" element={<LandingPage />} />

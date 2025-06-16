@@ -4,7 +4,6 @@ import type { Transaction, NewTransaction } from '../types';
 import {
   createTransaction,
   fetchAllTransactions,
-  fetchMonthlyTransactions,
   fetchPaginatedTransactions
 } from '../api/transactions';
 
@@ -18,7 +17,7 @@ interface TransactionStore {
   selectedMonth: string;
 
   fetchAll: () => Promise<void>;
-  fetchByMonth: (month: string) => Promise<void>
+  // fetchByMonth: (month: string) => Promise<void>
   fetchInitialPaginated: () => Promise<void>;
   fetchMorePaginated: () => Promise<void>;
   addTransaction: (transaction: NewTransaction) => Promise<void>;
@@ -30,6 +29,7 @@ const getDefaultMonth = () => {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 };
+
 
 export const useTransactionStore = create<TransactionStore>((set, get) => ({
   transactions: [],
@@ -52,17 +52,17 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
     }
   },
 
-  fetchByMonth: async (month: string) => {
-    set({ loading: true });
-    try {
-      const transactions = await fetchMonthlyTransactions(month);
-      set({ transactions });
-    } catch (error) {
-      toast.error("Failed to fetch monthly transactions.");
-    } finally {
-      set({ loading: false });
-    }
-  },
+  // fetchByMonth: async (month: string) => {
+  //   set({ loading: true });
+  //   try {
+  //     const transactions = await fetchMonthlyTransactions(month);
+  //     set({ transactions });
+  //   } catch (error) {
+  //     toast.error("Failed to fetch monthly transactions.");
+  //   } finally {
+  //     set({ loading: false });
+  //   }
+  // },
 
   fetchInitialPaginated: async () => {
     set({ loading: true, offset: 0, hasMore: true });
@@ -102,7 +102,7 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
 
   addTransaction: async (transaction: NewTransaction) => {
     set({ loading: true });
-    try {
+    try {      
       const created = await createTransaction(transaction);
       set((state) => ({
         transactions: [created, ...state.transactions],
@@ -116,7 +116,7 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
     }
   },
 
-  setSelectedMonth: (month: string) => set({ selectedMonth: month}),
+  setSelectedMonth: (month: string) => set({ selectedMonth: month }),
 
   reset: () => {
     set({

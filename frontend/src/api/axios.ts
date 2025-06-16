@@ -31,8 +31,6 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        console.log('refreshing token');
-
         await api.post('/auth/refresh');
         processQueue(null);
         return api(original);

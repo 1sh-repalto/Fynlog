@@ -19,7 +19,7 @@ export const createTransaction = async (
 
     const userId = req.user.userId;
     let { categoryId, amount, type, description } = req.body;
-
+    
     const transaction = await Transaction.create({
       userId,
       categoryId,
@@ -48,9 +48,9 @@ export const getAllTransactions = async (
     const userId = req.user.userId;
     const transactions = await Transaction.findAll({
       where: { userId },
-      order: ["date", "DESC"],
+      order: [["date", "DESC"]],
     });
-
+    
     res.status(200).json({ transactions });
   } catch (error) {
     next(error);

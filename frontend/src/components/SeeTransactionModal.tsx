@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Transaction } from '../types';
 import { incomeCategories, expenseCategories } from '../data/defaultCategories';
 import { X } from 'lucide-react';
+import Twemoji from 'react-twemoji';
 
 interface SeeTransactionModalProps {
   isOpen: boolean;
@@ -60,7 +61,12 @@ const SeeTransactionModal: React.FC<SeeTransactionModalProps> = ({
           <hr className="my-4 border-t border-neutral-700" />
           <div className="flex items-center">
             <p className="text-2xl font-semibold w-1/2 text-neutral-500">Category</p>
-            <p className="font-semibold">{category?.name || `ID: ${categoryId}`}</p>
+            <div className='flex items-center gap-4'>
+              <p className="font-semibold">{category?.name || `ID: ${categoryId}`}</p>
+              <Twemoji options={{ className: '' }}>
+                <span className="w-8 h-8 inline-block">{category?.emoji}</span>
+              </Twemoji>
+            </div>
           </div>
           <hr className="my-4 border-t border-neutral-700" />
           <div className="flex items-center">

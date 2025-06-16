@@ -37,7 +37,7 @@ export default function AddTransactionButton() {
       date: new Date().toISOString(),
       description: desc.trim() || undefined,
     };
-
+    
     try {
       await addTransaction(transactionData);
 

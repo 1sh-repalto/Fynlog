@@ -10,13 +10,24 @@ export const getChartDataByType = (
   transactions: Transaction[],
   categories: Category[],
   type: 'income' | 'expense',
+  selectedMonth: string,
 ): ChartData => {
-  const totals = transactions
-    .filter((tx) => tx.type === type)
-    .reduce<Record<number, number>>((acc, tx) => {
-      acc[tx.categoryId] = (acc[tx.categoryId] || 0) + tx.amount;
-      return acc;
-    }, {});
+  const [selectedYear, selectedMonthNum] = selectedMonth.split('-').map(Number);
+
+  const monthlyTransactions = transactions.filter((tx) => {
+    if (!tx.date) return false;
+    const txDate = new Date(tx.date);
+    return (
+      txDate.getFullYear() === selectedYear &&
+      txDate.getMonth() + 1 === selectedMonthNum &&
+      tx.type === type
+    );
+  });
+
+  const totals = monthlyTransactions.reduce<Record<number, number>>((acc, tx) => {
+    acc[tx.categoryId] = (acc[tx.categoryId] || 0) + Number(tx.amount);
+    return acc;
+  }, {});
 
   const result = categories
     .filter((cat) => totals[cat.id])

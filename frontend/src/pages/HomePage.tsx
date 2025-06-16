@@ -1,38 +1,32 @@
 import Navbar from '../components/Navbar';
 import AddTransactionButton from '../components/AddTransactionButton';
-import DashboardCards from '../components/DashboardCards';
 import DashboardRecentTransactions from '../components/DashboardRecentTransactions';
 import DashboardGreeting from '../components/DashboardGreeting';
-import DashboardBreakdownCharts from '../components/DashboardBreakdownCharts';
 import DashboardMonthlySpendings from '../components/DashboardMonthlySpendings';
+import { useEffect } from 'react';
+import { useTransactionStore } from '../store/useTransactionStore';
+import { useAuthStore } from '../store/useAuth';
+import DashboardMonthlySummary from '../components/DashboardMonthlySummary';
 
 const HomePage = () => {
-  const currentMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+
+  useEffect(() => {
+    const { isAuthenticated } = useAuthStore.getState();
+    const { fetchAll } = useTransactionStore.getState();
+
+    if (isAuthenticated) {
+      fetchAll(); // only if not already fetched
+    }
+  }, []);
 
   return (
     <>
       <Navbar />
       <main className="pt-7 px-12">
         <DashboardGreeting />
-        <div className="h-auto w-full rounded-lg bg-lightDark mt-12 p-5">
-          <h1 className="text-2xl text-neutral-500 font-semibold ml-2">
-            Monthly financial summary - {currentMonth}
-          </h1>
-          <DashboardCards />
-          <DashboardBreakdownCharts />
-        </div>
-        <div className="h-auto w-full rounded-lg bg-lightDark mt-12 p-5">
-          <h1 className="text-2xl text-neutral-500 font-semibold ml-2">Recent Transactions</h1>
-          <DashboardRecentTransactions />
-        </div>
-        <div className="h-auto w-full rounded-lg bg-lightDark mt-12 p-5">
-          <h1 className="text-2xl text-neutral-500 font-semibold ml-2">Your spending over last 5 months</h1>
-          <DashboardMonthlySpendings />
-        </div>
-        <div className="h-auto w-full rounded-lg bg-lightDark mt-12 p-5">
-          <h1 className="text-2xl text-neutral-500 font-semibold ml-2">Recent Transactions</h1>
-          <DashboardRecentTransactions />
-        </div>
+        <DashboardMonthlySummary />
+        <DashboardRecentTransactions />
+        <DashboardMonthlySpendings />
         <AddTransactionButton />
       </main>
     </>
