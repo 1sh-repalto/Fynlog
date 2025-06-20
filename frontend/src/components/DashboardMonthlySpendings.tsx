@@ -69,9 +69,17 @@ const DashboardMonthlySpendings = () => {
   const noDataAvailable = income.every((amt) => amt === 0) && expenses.every((amt) => amt === 0);
   if (noDataAvailable) {
     return (
-      <p className="text-xl font-semibold text-center py-5 text-neutral-600">
-        No data available. Add transactions.
-      </p>
+      <div className="h-auto w-full rounded-lg bg-lightDark my-12 p-5">
+        <div className="flex gap-3 items-center">
+          <h1 className="text-3xl text-neutral-500 font-semibold ml-2">Past Financial Trends</h1>
+          <Twemoji options={{ className: '' }}>
+            <span className="w-10 h-10 inline-block">📊</span>
+          </Twemoji>
+        </div>
+        <p className="text-xl font-semibold text-center py-5 text-neutral-600">
+          No data available. Add transactions.
+        </p>
+      </div>
     );
   }
 

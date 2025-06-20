@@ -30,3 +30,8 @@ export const checkStatus = async (): Promise<any> => {
   const res = await api.get('/auth/session-status');
   return res.data;
 }
+
+export const deleteUser = async (userID: number) => {
+  const res = await api.delete(`users/${userID}`);
+  return res.data;
+} 

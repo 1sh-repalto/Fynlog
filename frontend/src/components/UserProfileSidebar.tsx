@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { CircleUser, Trash2, X } from 'lucide-react';
 import { useAuthStore } from '../store/useAuth';
 import { useTransactionStore } from '../store/useTransactionStore';
+import { deleteUser } from '../api/auth';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   isOpen: boolean;
@@ -10,6 +12,7 @@ interface Props {
 }
 
 export default function UserProfileSidebar({ isOpen, onClose }: Props) {
+  const navigate = useNavigate();
   const { user } = useAuthStore();
   const transactions = useTransactionStore((state) => state.transactions);
   const totalTransactions = transactions.length ?? 0;
@@ -22,6 +25,20 @@ export default function UserProfileSidebar({ isOpen, onClose }: Props) {
         return `${day} ${month}, ${year}`;
       })()
     : '{ Something went wrong! }';
+
+  const handleDeleteUser = async () => {
+    const confirm = window.confirm("Are you sure you want to delete your account? This cannot be undone.");
+    if (!confirm) return;
+
+    try {
+      await deleteUser(Number(user?.id));
+      localStorage.clear(); // or zustand reset
+      navigate('/'); // or home page
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      alert('Something went wrong. Please try again.');
+    }
+  }
 
   // Disable scrolling when sidebar is open
   useEffect(() => {
@@ -40,6 +57,12 @@ export default function UserProfileSidebar({ isOpen, onClose }: Props) {
         onClick={(e) => e.stopPropagation()}
         className="ml-auto w-100 h-screen bg-lightDark p-6 animate-slide-in-right relative z-10 flex flex-col"
       >
+        <button
+          className="absolute top-3 right-3 text-xl font-bold cursor-pointer bg-rose-800 rounded-sm p-1 hover:bg-rose-700"
+          onClick={onClose}
+        >
+          <X size={28} />
+        </button>
         {/* Scrollable Content */}
         <div className="overflow-y-auto flex-1 pr-1">
           <CircleUser className="mx-auto text-neutral-600" size={140} />
@@ -59,7 +82,7 @@ export default function UserProfileSidebar({ isOpen, onClose }: Props) {
 
         {/* Fixed Footer Button */}
         <div className="pt-4">
-          <button className="w-full h-12 flex justify-center items-center gap-2 border border-rose-800 text-rose-700 text-lg font-medium rounded-md px-6 hover:bg-rose-800 hover:text-neutral transition duration-200">
+          <button onClick={handleDeleteUser} className="w-full h-12 flex justify-center items-center gap-2 border border-rose-800 text-rose-700 text-lg font-medium rounded-md px-6 hover:bg-rose-800 hover:text-neutral transition duration-200">
             <Trash2 />
             Delete Account
           </button>
