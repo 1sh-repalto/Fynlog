@@ -23,9 +23,9 @@ export interface User {
 }
 
 export interface Budget {
-  id: Number;
-  userId: Number;
-  categoryId: Number;
+  id: number;
+  userId: number;
+  categoryId: number;
   amount: number;
   month: string;
   createdAt: string;

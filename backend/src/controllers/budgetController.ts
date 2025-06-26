@@ -1,4 +1,4 @@
-import { Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "../middlewares/authMiddleware";
 import { AppError } from "../middlewares/errorHandler";
 import Budget from "../models/budget";
@@ -53,6 +53,24 @@ export const getBudgetsForMonth = async (
 
     const budgets = await Budget.findAll({ where: { userId, month } });
     res.json(budgets);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteBudget = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+
+  try {
+    const budget = await Budget.findByPk(id);
+
+    if (!budget) {
+      return next(new AppError('Budget not found', 404));
+    }
+
+    await budget.destroy();
+
+    res.status(204).send(); // 204 = No Content (successful deletion)
   } catch (error) {
     next(error);
   }
