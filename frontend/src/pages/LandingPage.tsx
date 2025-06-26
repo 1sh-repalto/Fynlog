@@ -134,7 +134,7 @@ const LandingPage = () => {
             <FaGithub size={32} />
           </a>
           <a
-            href="https://www.linkedin.com/in/yourusername"
+            href="https://www.linkedin.com/in/repalto"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-white transition-colors"

@@ -5,6 +5,7 @@ import sequelize from "./config/db";
 import authRouter from "./routes/authRoutes";
 import userRouter from "./routes/userRoutes";
 import transactionRouter from "./routes/transactionRoutes";
+import budgetRouter from "./routes/budgetRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
 import Transaction from "./models/transaction";
 import { env } from "./config/env";
@@ -42,6 +43,7 @@ app.use(
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/transactions", transactionRouter);
+app.use("/api/budgets", budgetRouter)
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({

@@ -27,7 +27,7 @@ const DropDownMenu: React.FC<{
         </Link>
 
         <Link
-          to="/page3"
+          to="/budgets"
           className="flex md:hidden px-4 py-2 rounded-sm hover:bg-[#424242] transition duration-200 ease-in-out cursor-pointer"
           onClick={closeMenu}
         >

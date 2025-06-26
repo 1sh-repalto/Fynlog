@@ -47,12 +47,12 @@ const Navbar: React.FC = () => {
           Transactions
         </Link>
         <Link
-          to="/page3"
+          to="/budgets"
           className={`font-semibold hover:bg-lighterDark h-12 w-auto px-3 rounded-sm flex justify-center items-center transition duration-200 ease-in-out ${
             location.pathname === '/page3' && 'bg-lighterDark'
           }`}
         >
-          Page3
+          Budgets
         </Link>
       </div>
       <div ref={menuRef} className="w-3/10 flex justify-end items-center relative">

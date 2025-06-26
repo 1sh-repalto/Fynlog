@@ -15,7 +15,7 @@ const TransactionListItem = ({ transaction, category, onClick }: Props) => {
     <li
       key={transaction.id}
       onClick={onClick}
-      className={`h-24 px-8 flex justify-between items-center bg-lighterDark  p-3 rounded-md hover:scale-102 cursor-pointer transition-transform duration-200 transform`}
+      className="h-24 px-8 flex justify-between items-center bg-lighterDark  p-3 rounded-md hover:scale-102 cursor-pointer transition-transform duration-200 transform"
     >
       <div className="h-full flex items-center justify-center gap-6">
         <Twemoji options={{ className: '' }}>

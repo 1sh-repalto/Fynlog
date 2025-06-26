@@ -7,6 +7,7 @@ import AuthPage from '../pages/AuthPage';
 import Layout from '../components/Layout';
 import TransactionsPage from '../pages/TransactionsPage';
 import NotFoundPage from '../pages/NotFoundPage';
+import BudgetPage from '../pages/BudgetsPage';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -14,7 +15,8 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<HomePage />} />
-          <Route path="/transactions" element={<TransactionsPage />} />    
+          <Route path="/transactions" element={<TransactionsPage />} /> 
+          <Route path="/budgets" element={<BudgetPage />} />
         </Route>
 
         <Route path="/" element={<LandingPage />} />

@@ -22,4 +22,14 @@ export interface User {
   createdAt: string;
 }
 
+export interface Budget {
+  id: Number;
+  userId: Number;
+  categoryId: Number;
+  amount: number;
+  month: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type NewTransaction = Omit<Transaction, 'id'>;
