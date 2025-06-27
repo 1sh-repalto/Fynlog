@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import { Transaction } from '../types';
-import { useTransactionStore } from '../store/useTransactionStore';
+import { Transaction } from '../../types';
+import { useTransactionStore } from '../../store/useTransactionStore';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import SeeTransactionModal from './SeeTransactionModal';
-import TransactionListItem from './TransactionListItem';
-import { getCategoryById } from '../utils/getCategoryById';
+import SeeTransactionModal from '../SeeTransactionModal';
+import TransactionListItem from '../transactionsPage/TransactionListItem';
+import { getCategoryById } from '../../utils/getCategoryById';
 import Twemoji from 'react-twemoji';
 
 const DashboardRecentTransactions = () => {

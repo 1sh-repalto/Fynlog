@@ -1,5 +1,5 @@
 import Twemoji from 'react-twemoji';
-import { useAuthStore } from '../store/useAuth';
+import { useAuthStore } from '../../store/useAuth';
 
 const DashboardGreeting = () => {
   const { user } = useAuthStore();

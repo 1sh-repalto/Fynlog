@@ -1,9 +1,9 @@
 // components/DashboardMonthlySpendings.tsx
 import { useEffect, useState } from 'react';
 import MonthlySpendingBarChart from './MonthlySpendingBarChart';
-import { fetchMonthlyTransactions } from '../api/transactions';
-import type { Transaction } from '../types';
-import { useTransactionStore } from '../store/useTransactionStore';
+import { fetchMonthlyTransactions } from '../../api/transactions';
+import type { Transaction } from '../../types';
+import { useTransactionStore } from '../../store/useTransactionStore';
 import Twemoji from 'react-twemoji';
 
 const getLastFiveMonths = (): { label: string; key: string }[] => {

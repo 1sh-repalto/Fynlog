@@ -4,9 +4,10 @@ import { ArrowDown } from 'lucide-react';
 import { Transaction } from '../types';
 import { useTransactionStore } from '../store/useTransactionStore';
 import SeeTransactionModal from '../components/SeeTransactionModal';
-import TransactionListItem from '../components/TransactionListItem';
+import TransactionListItem from '../components/transactionsPage/TransactionListItem';
 import { getCategoryById } from '../utils/getCategoryById';
 import Twemoji from 'react-twemoji';
+import AddTransactionButton from '../components/AddTransactionButton';
 
 const TransactionsPage = () => {
   const { paginatedTransactions, fetchInitialPaginated, fetchMorePaginated, hasMore, loading } =
@@ -83,6 +84,7 @@ const TransactionsPage = () => {
           <p className="my-4 text-center text-lg text-gray-400">No more transactions</p>
         )}
       </main>
+      <AddTransactionButton />
     </>
   );
 };

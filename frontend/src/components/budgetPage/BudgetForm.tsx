@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { expenseCategories } from '../data/defaultCategories';
-import { useBudgetStore } from '../store/useBudgetStore';
+import { expenseCategories } from '../../data/defaultCategories';
+import { useBudgetStore } from '../../store/useBudgetStore';
 
 interface Props {
   onSuccess?: () => void;

@@ -2,12 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/useAuth';
 import { useNavigate } from 'react-router-dom';
 
-interface SignupFormProps {
-  login: boolean;
-  setLogin: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const SignupForm: React.FC<SignupFormProps> = ({ setLogin }) => {
+const SignupForm: React.FC = () => {
   const navigate = useNavigate();
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -32,9 +27,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ setLogin }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-dark bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:4rem_6rem] px-4">
       <div className="w-full max-w-xl text-neutral">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl text-center font-bold mb-10">
-          Sign Up
-        </h2>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl text-center font-bold mb-10">Sign Up</h2>
 
         <form onSubmit={handleSubmit} className="space-y-6 flex flex-col items-center">
           <input
@@ -76,7 +69,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ setLogin }) => {
         <p className="text-center mt-6 text-sm sm:text-base select-none">
           Already have an account?{' '}
           <a
-            onClick={() => setLogin(true)}
+            onClick={() => navigate("/login", { replace: true })}
             className="text-accent cursor-pointer hover:underline hover:drop-shadow-[0px_0px_10px_rgba(88,144,203,0.8)] active:drop-shadow-none"
           >
             Log In

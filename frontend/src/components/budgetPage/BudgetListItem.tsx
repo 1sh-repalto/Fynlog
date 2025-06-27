@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { useTransactionStore } from '../store/useTransactionStore';
-import { Budget, Category } from '../types';
-import { getMonthlyCategorySpend } from '../utils/getMonthlyCategorySpend';
+import { useTransactionStore } from '../../store/useTransactionStore';
+import { Budget, Category } from '../../types';
+import { getMonthlyCategorySpend } from '../../utils/getMonthlyCategorySpend';
 import Twemoji from 'react-twemoji';
 import { Trash2, AlertTriangle } from 'lucide-react';
-import { useBudgetStore } from '../store/useBudgetStore';
+import { useBudgetStore } from '../../store/useBudgetStore';
 
 interface Props {
   budget: Budget;

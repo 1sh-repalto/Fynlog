@@ -1,4 +1,4 @@
-import { useTransactionStore } from '../store/useTransactionStore';
+import { useTransactionStore } from '../../store/useTransactionStore';
 import { Wallet, TrendingUp, TrendingDown } from 'lucide-react';
 
 const DashboardCards = () => {

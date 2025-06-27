@@ -38,7 +38,7 @@ api.interceptors.response.use(
       } catch (error) {
         processQueue(error, null);
         logout();
-        window.location.href = '/auth';
+        window.location.href = '/signup';
         return Promise.reject(error);
       } finally {
         isRefreshing = false;

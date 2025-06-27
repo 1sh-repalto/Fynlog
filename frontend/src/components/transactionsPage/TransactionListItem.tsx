@@ -1,5 +1,5 @@
 import { Trash2 } from 'lucide-react';
-import { Transaction, Category } from '../types';
+import { Transaction, Category } from '../../types';
 import Twemoji from 'react-twemoji';
 
 interface Props {

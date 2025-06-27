@@ -1,14 +1,16 @@
 import { useNavigate } from 'react-router-dom';
-import { Ban, BarChart3, HandHeart } from 'lucide-react';
+import { Ban, BarChart3, HandHeart, ArrowRight } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import Navbar from '../components/Navbar';
 
 const LandingPage = () => {
   const navigate = useNavigate();
 
   return (
     <>
+      <Navbar />
       {/* Hero Section */}
-      <div className="container mx-auto text-center mt-24 px-4">
+      <div className="container mx-auto text-center mt-44 px-4">
         <h1 className="text-4xl md:text-6xl font-semibold">
           Take{' '}
           <span className="font-light text-warning drop-shadow-[0_0_25px_rgba(230,126,34,1)]">
@@ -17,13 +19,14 @@ const LandingPage = () => {
           of Your Finances
         </h1>
         <p className="italic text-xl mt-6 font-light">
-          Plan, save, and spend wisely with our easy-to-use expense tracker.
+          Your everyday companion to track spending, gain insights, and manage finance.
         </p>
         <button
-          onClick={() => navigate('/auth')}
-          className="mt-10 py-3 px-6 text-lg font-semibold bg-secondary rounded-full hover:shadow-lg hover:bg-[#2ecc71] active:bg-[#208049] transition"
+          onClick={() => navigate('/signup')}
+          className="flex items-center justify-center gap-2 mx-auto mt-12 py-3 px-6 rounded-4xl border border-secondary text-neutral bg-secondary text-lg font-medium hover:bg-secondary hover:text-neutral hover:drop-shadow-[0px_0px_8px_rgba(39,174,96,0.8)] active:drop-shadow-none active:bg-[#208049] transition duration-200"
         >
-          Get Started Now!
+          Get Started Now
+          <ArrowRight />
         </button>
       </div>
 
@@ -126,24 +129,13 @@ const LandingPage = () => {
       <footer className="bg-dark border-t border-neutral-700 py-10 px-6 text-sm text-muted-foreground">
         <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center md:text-left">
-            <p>
-              &copy; {new Date().getFullYear()}{' '}
-              <span className="font-semibold text-white">FinanceTracker</span>. All rights reserved.
+            <p className='text-lg font-semibold text-neutral-500'>
+              Made with ❤️ and ☕
             </p>
-            <div className="mt-2 space-x-4">
-              <a href="#" className="hover:underline">
-                Privacy Policy
-              </a>
-              <a href="#" className="hover:underline">
-                Terms of Service
-              </a>
-              <a href="#" className="hover:underline">
-                Contact
-              </a>
-            </div>
           </div>
 
-          <div className="flex space-x-4">
+          <div className="flex items-center space-x-4">
+            <p className='text-md font-semibold text-neutral-300'>Let's Connect : </p>
             <a
               href="https://github.com/1sh-repalto/finance-tracker"
               target="_blank"

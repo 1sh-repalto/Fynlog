@@ -1,7 +1,7 @@
 import BreakdownChart from './BreakdownChart';
-import { getChartDataByType } from '../utils/getChartDataByType';
-import { expenseCategories, incomeCategories } from '../data/defaultCategories';
-import { useTransactionStore } from '../store/useTransactionStore';
+import { getChartDataByType } from '../../utils/getChartDataByType';
+import { expenseCategories, incomeCategories } from '../../data/defaultCategories';
+import { useTransactionStore } from '../../store/useTransactionStore';
 
 const DashboardBreakdownCharts = () => {
   const { transactions, selectedMonth } = useTransactionStore();

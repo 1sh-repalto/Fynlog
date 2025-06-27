@@ -1,12 +1,12 @@
 import Navbar from '../components/Navbar';
 import AddTransactionButton from '../components/AddTransactionButton';
-import DashboardRecentTransactions from '../components/DashboardRecentTransactions';
-import DashboardGreeting from '../components/DashboardGreeting';
-import DashboardMonthlySpendings from '../components/DashboardMonthlySpendings';
+import DashboardRecentTransactions from '../components/dashboardPage/DashboardRecentTransactions';
+import DashboardGreeting from '../components/dashboardPage/DashboardGreeting';
+import DashboardMonthlySpendings from '../components/dashboardPage/DashboardMonthlySpendings';
 import { useEffect } from 'react';
 import { useTransactionStore } from '../store/useTransactionStore';
 import { useAuthStore } from '../store/useAuth';
-import DashboardMonthlySummary from '../components/DashboardMonthlySummary';
+import DashboardMonthlySummary from '../components/dashboardPage/DashboardMonthlySummary';
 
 const HomePage = () => {
 
