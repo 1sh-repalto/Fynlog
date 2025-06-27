@@ -1,3 +1,4 @@
+// utils/apiErrorHandler.ts
 import { toast } from 'react-toastify';
 
 interface ApiError {
@@ -10,17 +11,17 @@ interface ApiError {
 
 export const handleApiErrors = (
   error: unknown,
-  fallBackMessage = 'Something went wrong',
+  fallbackMessage = 'Something went wrong',
   options: { showToast?: boolean } = { showToast: true },
-) => {
-  let message = fallBackMessage;
+): string => {
+  let message = fallbackMessage;
 
-  if (error instanceof Error) {
+  if ((error as ApiError)?.response?.data?.message) {
+    message = (error as ApiError).response!.data!.message!;
+  } else if (error instanceof Error) {
     message = error.message;
   } else if (typeof error === 'string') {
     message = error;
-  } else if ((error as ApiError)?.response?.data?.message) {
-    message = (error as ApiError)?.response?.data?.message ?? fallBackMessage;
   }
 
   if (options.showToast) {
@@ -28,4 +29,25 @@ export const handleApiErrors = (
   }
 
   return message;
+};
+
+
+export const toastApiCall = async <T>(
+  promise: Promise<T>,
+  fallbackMessage = 'Something went wrong'
+): Promise<T | null> => {
+  try {
+    return await promise;
+  } catch (error: unknown) {
+    let message = fallbackMessage;
+
+    if ((error as ApiError)?.response?.data?.message) {
+      message = (error as ApiError).response!.data!.message!;
+    } else if (error instanceof Error) {
+      message = error.message;
+    }
+
+    toast.error(message);
+    return null;
+  }
 };

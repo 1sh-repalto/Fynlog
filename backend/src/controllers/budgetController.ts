@@ -58,20 +58,28 @@ export const getBudgetsForMonth = async (
   }
 };
 
-export const deleteBudget = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+export const deleteBudget = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   try {
     const budget = await Budget.findByPk(id);
 
     if (!budget) {
-      return next(new AppError('Budget not found', 404));
+      return next(new AppError("Budget not found", 404));
+    }
+
+    if (budget.userId !== req.user?.userId) {
+      return next(new AppError("Unauthorized to delete this budget", 403));
     }
 
     await budget.destroy();
-
-    res.status(204).send(); // 204 = No Content (successful deletion)
+    res.status(204).send(); // No content
   } catch (error) {
     next(error);
   }
 };
+

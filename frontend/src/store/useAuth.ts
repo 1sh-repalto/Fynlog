@@ -3,6 +3,7 @@ import { login, signup, logout, validateSession } from '../api/auth';
 import { User } from '../types';
 import { clearUser, getUser, saveUser } from '../utils/storage';
 import api from '../api/axios';
+import { toastApiCall } from '../utils/handleApiErrors';
 
 interface AuthState {
   user: User | null;
@@ -17,64 +18,62 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: getUser(),
   loading: true,
-  isAuthenticated: false,
+  isAuthenticated: !!getUser(),
 
   initializeAuth: async () => {
-    try {
-      const { hasSession } = await api.get('/auth/session-status').then((res) => res.data);
-      if (!hasSession) {
-        // No session at all (no refresh token)
-        clearUser();
-        set({ user: null, isAuthenticated: false });
-        return;
-      }
+    set({ loading: true });
 
-      try {
-        const user = await validateSession();
-        saveUser(user);
-        set({ user, isAuthenticated: true });
-      } catch (err: any) {
-        if (err?.response?.status === 401 || err?.response?.status === 403) {
-          try {
-            await api.post('/auth/refresh');
-            const user = await validateSession();
-            saveUser(user);
-            set({ user, isAuthenticated: true });
-          } catch (refreshErr) {
-            // Refresh also failed
-            clearUser();
-            set({ user: null, isAuthenticated: false });
-            console.warn('Session expired. Please log in again.');
-          }
-        } else {
-          // Unexpected error during validateSession
-          console.error('Unexpected error during session validation:', err);
-        }
+    const sessionStatus = await toastApiCall(
+      api.get('/auth/session-status').then(res => res.data),
+      'Failed to check session status'
+    );
+
+    if (!sessionStatus?.hasSession) {
+      clearUser();
+      set({ user: null, isAuthenticated: false, loading: false });
+      return;
+    }
+
+    let user = await toastApiCall(validateSession(), 'Session validation failed');
+
+    if (!user) {
+      const refreshed = await toastApiCall(api.post('/auth/refresh'), 'Session refresh failed');
+
+      if (refreshed) {
+        user = await toastApiCall(validateSession(), 'Session re-validation failed');
       }
-    } catch (outerErr) {
-      // session-status check itself failed
-      console.error('Failed to check session status:', outerErr);
+    }
+
+    if (user) {
+      saveUser(user);
+      set({ user, isAuthenticated: true });
+    } else {
       clearUser();
       set({ user: null, isAuthenticated: false });
-    } finally {
-      set({ loading: false });
     }
+
+    set({ loading: false });
   },
 
   loginUser: async (data) => {
-    const user = await login(data);
-    saveUser(user);
-    set({ user, isAuthenticated: true });
+    const user = await toastApiCall(login(data), 'Login failed');
+    if (user) {
+      saveUser(user);
+      set({ user, isAuthenticated: true });
+    }
   },
 
   signupUser: async (data) => {
-    const user = await signup(data);
-    saveUser(user);
-    set({ user, isAuthenticated: true });
+    const user = await toastApiCall(signup(data), 'Signup failed');
+    if (user) {
+      saveUser(user);
+      set({ user, isAuthenticated: true });
+    }
   },
 
   logoutUser: async () => {
-    await logout();
+    await toastApiCall(logout(), 'Logout failed');
+    clearUser();
     set({ user: null, isAuthenticated: false });
   },
 }));

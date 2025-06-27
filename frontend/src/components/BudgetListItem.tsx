@@ -4,7 +4,7 @@ import { Budget, Category } from '../types';
 import { getMonthlyCategorySpend } from '../utils/getMonthlyCategorySpend';
 import Twemoji from 'react-twemoji';
 import { Trash2, AlertTriangle } from 'lucide-react';
-import { useBudgetStore } from '../store/budgetStore';
+import { useBudgetStore } from '../store/useBudgetStore';
 
 interface Props {
   budget: Budget;
@@ -23,10 +23,10 @@ export default function BudgetListItem({ budget, category }: Props) {
   const isExceeded = spent > Number(budget.amount);
 
   const deleteBudget = async () => {
-    if (confirm("Are you sure you want to delete this budget?")) {
+    if (confirm('Are you sure you want to delete this budget?')) {
       await deleteBudgetFromStore(budget.id);
     }
-  }
+  };
 
   return (
     <li
@@ -52,7 +52,7 @@ export default function BudgetListItem({ budget, category }: Props) {
 
         <div className="h-full w-full py-4 rounded overflow-hidden">
           <div
-            className={`h-6 rounded ${isExceeded ? "bg-warning" : "bg-secondary "} transition-[width] duration-700 ease-in-out`}
+            className={`h-6 rounded ${isExceeded ? 'bg-warning' : 'bg-secondary '} transition-[width] duration-700 ease-in-out`}
             style={{ width: `${percentage}%` }}
           ></div>
         </div>
@@ -62,8 +62,10 @@ export default function BudgetListItem({ budget, category }: Props) {
         </div>
       </div>
 
-      <div className="h-14 flex justify-center items-center px-3 mx-3 cursor-pointer border rounded-md border-rose-700 text-rose-700 hover:bg-rose-700 hover:text-neutral transition-colors duration-200"
-      onClick={deleteBudget}>
+      <div
+        className="h-14 flex justify-center items-center px-3 mx-3 cursor-pointer border rounded-md border-rose-700 text-rose-700 hover:bg-rose-700 hover:text-neutral transition-colors duration-200"
+        onClick={deleteBudget}
+      >
         <Trash2 size={32} />
       </div>
     </li>

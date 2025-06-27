@@ -9,6 +9,7 @@ import budgetRouter from "./routes/budgetRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
 import Transaction from "./models/transaction";
 import { env } from "./config/env";
+import helmet from "helmet";
 // import helmet from "helmet";
 // import rateLimit from "express-rate-limit";
 
@@ -19,10 +20,10 @@ const app: Express = express();
 app.use(express.json());
 app.use(cookieParser());
 // app.use(limiter);
-// app.use(helmet());
+app.use(helmet());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow requests from frontend
+    origin: process.env.FRONTEND_URL, // Allow requests from frontend
     credentials: true, // Allow cookies to be sent
   })
 );

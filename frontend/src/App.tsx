@@ -13,8 +13,15 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <AppRoutes />
-      <ToastContainer position="top-right" autoClose={3000} theme="dark" />
+      <div className="min-h-screen bg-background text-foreground flex flex-col">
+        <AppRoutes />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          theme="dark"
+          toastClassName="text-sm sm:text-base"
+        />
+      </div>
     </Router>
   );
 };

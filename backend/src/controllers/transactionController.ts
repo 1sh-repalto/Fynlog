@@ -123,3 +123,38 @@ export const getPaginatedTransactions = async (
     next(error);
   }
 };
+
+export const deleteTransaction = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const transactionId = Number(req.params.id);
+    const userId = req.user?.userId;
+
+    if (!transactionId || isNaN(transactionId)) {
+      throw new AppError('Invalid transaction ID', 400);
+    }
+
+    if (!userId) {
+      throw new AppError('Unauthorized', 401);
+    }
+
+    const transaction = await Transaction.findOne({
+      where: { id: transactionId },
+    });
+
+    if (!transaction || transaction.userId !== userId) {
+      throw new AppError('Transaction not found or unauthorized', 404);
+    }
+
+    await Transaction.destroy({
+      where: { id: transactionId },
+    });
+
+    res.status(204).send(); // No content
+  } catch (err) {
+    next(err);
+  }
+};

@@ -1,3 +1,4 @@
+import { Trash2 } from 'lucide-react';
 import { Transaction, Category } from '../types';
 import Twemoji from 'react-twemoji';
 
@@ -5,11 +6,18 @@ interface Props {
   transaction: Transaction;
   category: Category | undefined;
   onClick?: () => void;
+  onDelete?: () => void; // ✅ add this
 }
 
-const TransactionListItem = ({ transaction, category, onClick }: Props) => {
+const TransactionListItem = ({ transaction, category, onClick, onDelete }: Props) => {
   const amount = Number(transaction.amount);
   const date = new Date(transaction.date);
+
+  const handleDelete = async () => {
+    if (confirm('Are you sure you want to delete this transaction?')) {
+      onDelete?.()
+    }
+  };
 
   return (
     <li
@@ -34,12 +42,24 @@ const TransactionListItem = ({ transaction, category, onClick }: Props) => {
           </p>
         </div>
       </div>
-      <div
-        className={`text-2xl font-semibold ${
-          transaction.type === 'income' ? 'text-secondary' : 'text-rose-700'
-        }`}
-      >
-        {transaction.type === 'income' ? '+ ' : '- '}₹{isNaN(amount) ? '0.00' : amount.toFixed(2)}
+      <div className="flex items-center gap-8">
+        <div
+          className={`text-2xl font-semibold ${
+            transaction.type === 'income' ? 'text-secondary' : 'text-rose-700'
+          }`}
+        >
+          {transaction.type === 'income' ? '+ ' : '- '}₹{isNaN(amount) ? '0.00' : amount.toFixed(2)}
+        </div>
+
+        <div
+          onClick={(e) => {
+            e.stopPropagation(); // prevent parent click (e.g., opening modal)
+            handleDelete();
+          }}
+          className="h-14 flex justify-center items-center px-3 mx-3 cursor-pointer border rounded-md border-rose-700 text-rose-700 hover:bg-rose-700 hover:text-neutral transition-colors duration-200"
+        >
+          <Trash2 size={32} />
+        </div>
       </div>
     </li>
   );

@@ -20,3 +20,7 @@ export const fetchPaginatedTransactions = async (limit: number, offset: number):
   const res = await api.get<{transactions: Transaction[]}>(`/transactions/paginated?limit=${limit}&offset=${offset}`);
   return res.data.transactions;
 }
+
+export const deleteTransaction = async (id: number) => {
+  await api.delete(`/transactions/${id}`);
+};

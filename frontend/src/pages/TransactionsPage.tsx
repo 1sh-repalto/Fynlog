@@ -11,6 +11,7 @@ import Twemoji from 'react-twemoji';
 const TransactionsPage = () => {
   const { paginatedTransactions, fetchInitialPaginated, fetchMorePaginated, hasMore, loading } =
     useTransactionStore();
+  const deleteTransaction = useTransactionStore((state) => state.deleteTransaction);
 
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,7 +34,7 @@ const TransactionsPage = () => {
     <>
       <Navbar />
       <main className="pt-7 px-12">
-        <div className='flex gap-4 items-center mt-10'>
+        <div className="flex gap-4 items-center mt-10">
           <h1 className="text-neutral text-5xl font-bold">Your Transactions</h1>
           <Twemoji options={{ className: '' }}>
             <span className="w-12 h-12 inline-block">📋</span>
@@ -50,6 +51,7 @@ const TransactionsPage = () => {
                   transaction={txn}
                   category={category}
                   onClick={() => openModal(txn)}
+                  onDelete={() => deleteTransaction(txn.id)}
                 />
               );
             })}

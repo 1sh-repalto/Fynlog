@@ -30,10 +30,13 @@ const SignupForm: React.FC<SignupFormProps> = ({ setLogin }) => {
   };
 
   return (
-    <div className="absolute inset-0 -z-10 h-full w-full bg-dark bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:4rem_6rem]">
-      <div className="w-4/6 min-w-80 max-w-120 min-h-150 mx-auto mt-20 text-neutral bg-transparent">
-        <h2 className="text-4xl md:text-6xl text-center font-bold p-5 h-1/6">Sign Up</h2>
-        <form onSubmit={handleSubmit} className="py-8 px-16 flex-col h-5/6 space-y-2">
+    <div className="min-h-screen flex items-center justify-center bg-dark bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:4rem_6rem] px-4">
+      <div className="w-full max-w-xl text-neutral">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl text-center font-bold mb-10">
+          Sign Up
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-6 flex flex-col items-center">
           <input
             required
             id="name"
@@ -41,7 +44,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ setLogin }) => {
             placeholder="Your Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="block bg-neutral-800 rounded-md mb-6 w-full h-10 p-6 outline-none border border-transparent focus:border-neutral"
+            className="bg-neutral-800 rounded-md w-2/3 h-12 px-4 outline-none border border-transparent focus:border-neutral"
           />
           <input
             required
@@ -50,7 +53,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ setLogin }) => {
             placeholder="Your Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="block bg-neutral-800 rounded-md mb-6 w-full h-10 p-6 outline-none border border-transparent focus:border-neutral"
+            className="bg-neutral-800 rounded-md w-2/3 h-12 px-4 outline-none border border-transparent focus:border-neutral"
           />
           <input
             required
@@ -59,18 +62,19 @@ const SignupForm: React.FC<SignupFormProps> = ({ setLogin }) => {
             placeholder="Your Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="block bg-neutral-800 rounded-md mb-6 w-full h-10 p-6 outline-none border border-transparent focus:border-neutral"
+            className="bg-neutral-800 rounded-md w-2/3 h-12 px-4 outline-none border border-transparent focus:border-neutral"
           />
 
           <button
             type="submit"
-            className="border border-secondary text-secondary text-lg font-medium rounded-md h-12 w-full px-6 mt-6 hover:bg-secondary hover:text-neutral hover:drop-shadow-[0px_0px_8px_rgba(39,174,96,0.8)] active:drop-shadow-none active:bg-[#208049] transition duration-200"
+            className="w-2/3 h-12 rounded-md border border-secondary text-secondary text-lg font-medium hover:bg-secondary hover:text-neutral hover:drop-shadow-[0px_0px_8px_rgba(39,174,96,0.8)] active:drop-shadow-none active:bg-[#208049] transition duration-200"
           >
             Sign Up
           </button>
         </form>
-        <p className="text-center select-none">
-          Already have an account ?{' '}
+
+        <p className="text-center mt-6 text-sm sm:text-base select-none">
+          Already have an account?{' '}
           <a
             onClick={() => setLogin(true)}
             className="text-accent cursor-pointer hover:underline hover:drop-shadow-[0px_0px_10px_rgba(88,144,203,0.8)] active:drop-shadow-none"

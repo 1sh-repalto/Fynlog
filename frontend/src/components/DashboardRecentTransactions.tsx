@@ -10,6 +10,7 @@ import Twemoji from 'react-twemoji';
 
 const DashboardRecentTransactions = () => {
   const transactions = useTransactionStore((state) => state.transactions);
+  const deleteTransaction = useTransactionStore((state) => state.deleteTransaction);
   const loading = useTransactionStore((state) => state.loading);
 
   const recent3transactions = [...transactions]
@@ -61,6 +62,7 @@ const DashboardRecentTransactions = () => {
                   transaction={txn}
                   category={category}
                   onClick={() => openModal(txn)}
+                  onDelete={() => deleteTransaction(txn.id)}
                 />
               );
             })

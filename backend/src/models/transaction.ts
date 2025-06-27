@@ -25,7 +25,7 @@ class Transaction
   public amount!: number;
   public type!: "income" | "expense";
   public date!: Date;
-  public description!: string;
+  public description?: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;

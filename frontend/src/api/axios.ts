@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { logout } from './auth';
+import { handleApiErrors } from '../utils/handleApiErrors';
 
 const api = axios.create({
   baseURL: 'http://localhost:3000/api',
@@ -43,6 +44,7 @@ api.interceptors.response.use(
         isRefreshing = false;
       }
     }
+    handleApiErrors(err);
     return Promise.reject(err);
   },
 );

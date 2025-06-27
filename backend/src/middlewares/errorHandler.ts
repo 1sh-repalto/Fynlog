@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { env } from "../config/env";
+import { ValidationError } from "sequelize";
 
 class AppError extends Error {
   statusCode: number;
@@ -22,7 +23,10 @@ const errorHandler = (
   let statusCode = 500;
   let message = "Internal Server Error";
 
-  if (err instanceof AppError) {
+  if (err instanceof ValidationError) {
+    statusCode = 400;
+    message = err.errors[0]?.message || "Validation error";
+  } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
   }

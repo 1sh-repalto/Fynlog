@@ -3,7 +3,7 @@ import Twemoji from 'react-twemoji';
 import BudgetForm from '../components/BudgetForm';
 import BudgetListItem from '../components/BudgetListItem';
 import Navbar from '../components/Navbar';
-import { useBudgetStore } from '../store/budgetStore';
+import { useBudgetStore } from '../store/useBudgetStore';
 import { useAuthStore } from '../store/useAuth';
 import { useTransactionStore } from '../store/useTransactionStore';
 import { getCategoryById } from '../utils/getCategoryById';
