@@ -5,14 +5,19 @@ import { env } from "../config/env";
 
 const JWT_SECRET = env.JWT_ACCESS_SECRET!;
 
-interface JwtPayload {
-    userId: number;
-    email: string;
+export interface JwtPayload {
+  userId: number;
+  email: string;
 }
 
-export interface AuthenticatedRequest extends Request {
-    user?: JwtPayload;
+export interface AuthenticatedRequest<
+  Body = any,
+  Params = any,
+  Query = any
+> extends Request<Params, any, Body, Query> {
+  user?: JwtPayload;
 }
+
 
 const authMiddleware = async (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
     const token = req.cookies?.accessToken;
