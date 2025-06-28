@@ -29,8 +29,8 @@ const Navbar: React.FC = () => {
   return (
     <nav className="h-16 px-20 flex justify-between items-center bg-lightDark shadow-[0_4px_12px_rgba(0,0,0,0.3)] sticky top-0 z-50">
       <div className="w-3/10 flex justify-start items-center">
-        <Link to="/" className="text-2xl w-3/10">
-          MyApp
+        <Link to="/" className="text-2xl w-3/10 font-semibold tracking-wide text-neutral-300" replace>
+          FynLog
         </Link>
       </div>
       {isAuthenticated ? (

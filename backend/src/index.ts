@@ -7,38 +7,34 @@ import userRouter from "./routes/userRoutes";
 import transactionRouter from "./routes/transactionRoutes";
 import budgetRouter from "./routes/budgetRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
-import Transaction from "./models/transaction";
 import { env } from "./config/env";
 import helmet from "helmet";
-// import helmet from "helmet";
-// import rateLimit from "express-rate-limit";
+import rateLimit from "express-rate-limit";
 
 const app: Express = express();
-// const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message: {
+    success: false,
+    message: "Too many requests, please try again later.",
+  },
+});
 
 // middleware
 app.use(express.json());
 app.use(cookieParser());
-// app.use(limiter);
 app.use(helmet());
+app.use(limiter);
 app.use(
   cors({
     origin: process.env.FRONTEND_URL, // Allow requests from frontend
     credentials: true, // Allow cookies to be sent
   })
 );
-
-// for dev use only - function to clear transactions
-// async function clearTransactions() {
-//   try {
-//     await Transaction.destroy({ where: {} }); // deletes all rows
-//     console.log("✅ All transactions deleted.");
-//   } catch (error) {
-//     console.error("❌ Error deleting transactions:", error);
-//   }
-// }
-
-// clearTransactions();
 
 // routes
 app.use("/api/auth", authRouter);
