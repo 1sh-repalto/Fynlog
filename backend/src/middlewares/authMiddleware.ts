@@ -11,13 +11,13 @@ export interface JwtPayload {
 }
 
 export interface AuthenticatedRequest<
-  Body = any,
   Params = any,
-  Query = any
-> extends Request<Params, any, Body, Query> {
+  ResBody = any,
+  ReqBody = any,
+  ReqQuery = any
+> extends Request<Params, ResBody, ReqBody, ReqQuery> {
   user?: JwtPayload;
 }
-
 
 const authMiddleware = async (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
     const token = req.cookies?.accessToken;
