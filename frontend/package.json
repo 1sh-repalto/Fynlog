@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,json,css,md}'",
-    "prepare": "if [ \"$CI\" != \"true\" ]; then husky install; fi"
+    "prepare": "node -e \"if (!process.env.CI) require('child_process').execSync('husky install', { stdio: 'inherit' })\""
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.9",
