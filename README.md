@@ -93,7 +93,7 @@ npm run dev
 ![Dashboard Monthly Summary](./screenshots/dashboardOverview.png)  
 *Monthly financial data with income v/s expense doughnut charts.*
 
-![Dashboard Recent Transactions](./screenshots/dashboardRecenTransactions.png)  
+![Dashboard Recent Transactions](./screenshots/dashboardRecentTransacations.png)  
 *Your most recent transactions.*
 
 ![Dashboard Monthly Spendings](./screenshots/monthlySpendings.png)  
