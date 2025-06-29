@@ -57,7 +57,7 @@ npm install
 npm run dev
 ```
 
-# 3. Fronent Setup
+## 3. Frontend Setup
 
 ```bash
 cd ../frontend
@@ -75,30 +75,54 @@ npm run dev
 
 ## 📸 Screenshots
 
+### 🚀 Landing Page
+
+![Landing Page](./screenshots/landing.png)  
+*Landing page for fynlog.*
+
 ### 🔐 Authentication
 
-![Login Page](./screenshots/authLogin.png)  
+![Signup Page](./screenshots/signup.png)  
+*User signup screen with name, email & password.*
+
+![Login Page](./screenshots/login.png)  
 *User login screen with email & password.*
 
 ### 📊 Dashboard Overview
 
-![Dashboard](./screenshots/dashboard.png)  
-*Dashboard showing total balance, charts, and recent activity.*
+![Dashboard Monthly Summary](./screenshots/dashboardOverview.png)  
+*Monthly financial data with income v/s expense doughnut charts.*
 
-### ➕ Add Transaction
+![Dashboard Recent Transactions](./screenshots/dashboardRecentTransactions.png)  
+*Your most recent transactions.*
 
-![Add Transaction Modal](./screenshots/add-transaction.png)  
-*Modal to quickly add a new income or expense.*
-
-### 📁 Budgets
-
-![Budgets Page](./screenshots/budgets.png)  
-*Set monthly limits for categories and track spending progress.*
+![Dashboard Monthly Spendings](./screenshots/monthlySpendings.png)  
+*Income v/s expense bar chart for recent 5 months.*
 
 ### 📄 Transactions List
 
-![Transactions Page](./screenshots/transactions.png)  
-*View all your transactions with pagination and filters.*
+![Transactions Page](./screenshots/transactionPage.png)  
+*View all your transactions with pagination.*
+
+### ➕ Add Transaction
+
+![Add Transaction Modal](./screenshots/addTransaction.png)  
+*Modal to quickly add a new income or expense.*
+
+### 🧾 View Transaction
+
+![View Transaction Details](./screenshots/transactionDetails.png)  
+*Modal to see transaction details*
+
+### 📁 Budgets
+
+![Budgets Page](./screenshots/budgetPage.png)  
+*Set monthly limits for categories and track spending progress.*
+
+### ➕ Add Budget
+
+![Add Budget Modal](./screenshots/addBudget.png)  
+*Modal to quickly add a new budget.*
 
 
 ## 📁 Project Structure Overview
