@@ -10,12 +10,12 @@ const DropDownMenu: React.FC<{
     <div className="absolute top-full right-0 mt-2 w-48 bg-[#303030] rounded shadow-lg z-50">
       <ul role="menu" className="py-2 px-2 space-y-4">
         <Link
-          to="/home"
+          to="/dashboard"
           className="flex md:hidden px-4 py-2 rounded-sm hover:bg-[#424242] transition duration-200 ease-in-out cursor-pointer"
           onClick={closeMenu}
         >
           <House />
-          <p className="ml-4">Home</p>
+          <p className="ml-4">Dashboard</p>
         </Link>
         <Link
           to="/transactions"

@@ -37,9 +37,9 @@ const Navbar: React.FC = () => {
         <>
           <div className="w-2/5 justify-between items-center hidden md:flex">
             <Link
-              to="/home"
+              to="/dashboard"
               className={`font-semibold hover:bg-lighterDark h-12 w-auto px-3 rounded-sm flex justify-center items-center transition duration-200 ease-in-out ${
-                location.pathname === '/home' && 'bg-lighterDark'
+                location.pathname === '/dashboard' && 'bg-lighterDark'
               }`}
             >
               Dashboard

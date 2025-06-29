@@ -11,7 +11,7 @@ const NotFoundPage: React.FC = () => {
         Sorry, the page you are looking for does not exist.
       </p>
       <button
-        onClick={() => navigate('/home')}
+        onClick={() => navigate('/dashboard')}
         className="bg-secondary text-neutral px-6 py-2 rounded-md text-lg font-semibold hover:bg-[#208049] transition"
       >
         Go to Dashboard

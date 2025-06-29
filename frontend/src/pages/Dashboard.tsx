@@ -8,7 +8,7 @@ import { useTransactionStore } from '../store/useTransactionStore';
 import { useAuthStore } from '../store/useAuth';
 import DashboardMonthlySummary from '../components/dashboardPage/DashboardMonthlySummary';
 
-const HomePage = () => {
+const Dashboard = () => {
 
   useEffect(() => {
     const { isAuthenticated } = useAuthStore.getState();
@@ -33,4 +33,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Dashboard;

@@ -33,7 +33,7 @@ export default function UserProfileSidebar({ isOpen, onClose }: Props) {
     try {
       await deleteUser(Number(user?.id));
       localStorage.clear(); // or zustand reset
-      navigate('/'); // or home page
+      navigate('/'); // or dashboard page
     } catch (error) {
       console.error('Error deleting user:', error);
       alert('Something went wrong. Please try again.');
