@@ -11,7 +11,7 @@ import { AuthenticatedRequest } from "../middlewares/authMiddleware";
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  sameSite: "strict" as const,
+  sameSite: process.env.NODE_ENV === "production" ? ("none" as const) : ("lax" as const),
   secure: process.env.NODE_ENV === "production",
 };
 
@@ -145,4 +145,3 @@ export const sessionStatus = async (
   }
   res.json({ hasSession: false });
 };
-

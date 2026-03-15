@@ -1,16 +1,26 @@
 import { Sequelize } from "sequelize";
 import { env } from "./env";
 
-const sequelize = new Sequelize(
-    env.DB_NAME as string,
-    env.DB_USER as string,
-    env.DB_PASSWORD as string,
-    {
-        host: env.DB_HOST,
-        dialect: "postgres",
-        port: Number(env.DB_PORT),
-        logging: false,
-    }
-);
+const commonOptions = {
+  dialect: "postgres" as const,
+  logging: false,
+  dialectOptions:
+    env.NODE_ENV === "production"
+      ? {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        }
+      : undefined,
+};
+
+const sequelize = env.DATABASE_URL
+  ? new Sequelize(env.DATABASE_URL, commonOptions)
+  : new Sequelize(env.DB_NAME!, env.DB_USER!, env.DB_PASSWORD!, {
+      host: env.DB_HOST,
+      port: env.DB_PORT,
+      ...commonOptions,
+    });
 
 export default sequelize;

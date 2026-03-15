@@ -13,6 +13,10 @@ import rateLimit from "express-rate-limit";
 
 const app: Express = express();
 
+if (env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
@@ -31,7 +35,7 @@ app.use(helmet());
 app.use(limiter);
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, // Allow requests from frontend
+    origin: env.FRONTEND_URL, // Allow requests from frontend
     credentials: true, // Allow cookies to be sent
   })
 );
