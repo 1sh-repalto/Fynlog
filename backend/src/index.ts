@@ -17,6 +17,8 @@ if (env.NODE_ENV === "production") {
   app.set("trust proxy", 1);
 }
 
+const allowedOrigin = env.FRONTEND_URL.replace(/\/+$/, "");
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
@@ -35,7 +37,7 @@ app.use(helmet());
 app.use(limiter);
 app.use(
   cors({
-    origin: env.FRONTEND_URL, // Allow requests from frontend
+    origin: allowedOrigin, // Allow requests from frontend
     credentials: true, // Allow cookies to be sent
   })
 );

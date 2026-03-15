@@ -19,7 +19,10 @@ const envSchema = z.object({
     .regex(/^\d+$/, "PORT must be a number")
     .default("3000")
     .transform(Number),
-  FRONTEND_URL: z.string().url("FRONTEND_URL must be a valid URL"),
+  FRONTEND_URL: z
+    .string()
+    .url("FRONTEND_URL must be a valid URL")
+    .transform((v) => v.replace(/\/+$/, "")),
   JWT_ACCESS_SECRET: z.string().min(1, "JWT_SECRET is required"),
   JWT_REFRESH_SECRET: z.string().min(1, "JWT_REFRESH_SECRET is required"),
   NODE_ENV: z.string().optional().default("development"),
